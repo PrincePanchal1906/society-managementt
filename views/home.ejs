@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("./partials/head") %>
+    <title>Dashboard | Society Management</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2">
+        <%- include("./partials/leftSidebar") %>
+      </div>
+
+      <!-- Content Area -->
+      <div class="col-lg-10 p-4 min-vh-100">
+        <div class="premium-card p-4 animate__animated animate__fadeIn">
+          <%- include("./partials/Dashboard") %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("./partials/script") %>
+</body>
+
+</html>

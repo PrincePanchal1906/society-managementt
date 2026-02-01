@@ -1,0 +1,285 @@
+/* 💎 Society Management - Premium Design System */
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    --secondary-gradient: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    --danger-gradient: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --accent-color: #27ae60;
+    --sidebar-width: 280px;
+    --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    --hover-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 🎨 Global Layout */
+body {
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    min-height: 100vh;
+    color: var(--text-main);
+}
+
+/* 🧱 Sidebar Styling */
+.sidebar-container {
+    background: white;
+    min-height: 100vh;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.02);
+    border-right: 1px solid #e2e8f0;
+}
+
+.sidebar-logo {
+    padding: 2rem 1.5rem;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sidebar-link {
+    padding: 0.8rem 1.5rem;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    margin: 0.2rem 1rem;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background: #f0fff4;
+    color: var(--accent-color);
+    transform: translateX(5px);
+}
+
+.sidebar-link i {
+    width: 20px;
+    text-align: center;
+}
+
+/* 💎 Premium Card */
+.premium-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* 📋 Header Section */
+.header-section {
+    background: var(--primary-gradient);
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-section h3 {
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+/* 🔘 Modern Buttons */
+.btn-premium {
+    background: white;
+    color: var(--accent-color);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    background: #f8fafc;
+    color: #219150;
+}
+
+/* 🔍 Search Input */
+.search-container {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.search-container i {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.search-input {
+    padding: 0.8rem 1rem 0.8rem 3rem;
+    border-radius: 15px;
+    border: 1.5px solid #e2e8f0;
+    background-color: white;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.search-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+    outline: none;
+}
+
+/* 📊 Tables */
+.fancy-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.fancy-table thead tr {
+    background: transparent;
+}
+
+.fancy-table th {
+    padding: 1rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border: none;
+}
+
+.fancy-table tbody tr {
+    background: white;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.fancy-table tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: var(--hover-shadow);
+    z-index: 10;
+}
+
+.fancy-table td {
+    padding: 1.2rem 1rem;
+    border: none;
+    vertical-align: middle;
+}
+
+.fancy-table td:first-child {
+    border-radius: 15px 0 0 15px;
+}
+
+.fancy-table td:last-child {
+    border-radius: 0 15px 15px 0;
+}
+
+/* 🏷 Badges */
+.badge-premium {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* 🛠 Action Icons */
+.action-icon {
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 0.3;
+    margin: 0 2px;
+    text-decoration: none;
+}
+
+.btn-view { background: #e3f2fd; color: #1976d2; }
+.btn-edit { background: #fff3e0; color: #f57c00; }
+.btn-delete { background: #ffebee; color: #d32f2f; }
+
+.action-icon:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+}
+
+/* 📝 Forms */
+.form-label {
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+}
+
+.input-group-text {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    color: var(--text-muted);
+}
+
+.input-group .form-control {
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+}
+
+/* 🏠 Dashboard Stats */
+.stat-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.icon-blue { background: #e3f2fd; color: #1976d2; }
+.icon-green { background: #e8f5e9; color: #2e7d32; }
+.icon-orange { background: #fff3e0; color: #f57c00; }

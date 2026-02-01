@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Flats Management | Society Management</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <!-- Content Area -->
+      <div class="col-lg-10 p-4 min-vh-100">
+        <div class="premium-card p-2 animate__animated animate__fadeIn">
+          <!-- Header Section -->
+          <div class="header-section">
+            <div>
+              <h3 class="fw-bold mb-0"><i class="fa-solid fa-layer-group me-2"></i>Flats Management</h3>
+              <p class="mb-0 small opacity-75 text-uppercase fw-bold">Comprehensive inventory of all units</p>
+            </div>
+            <a href="/flat/addFlat" class="btn-premium">
+              <i class="fa-solid fa-plus-circle me-1"></i> Add Flat
+            </a>
+          </div>
+
+          <div class="px-3 pb-3">
+            <!-- Search Container -->
+            <div class="search-container mt-4">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="flatSearch" class="search-input"
+                placeholder="Search by block name, flat number, or details..." onkeyup="filterFlats()">
+            </div>
+
+            <!-- Table Area -->
+            <div class="table-responsive">
+              <table class="table fancy-table" id="flatTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Block</th>
+                    <th>Flat No</th>
+                    <th>Area Size</th>
+                    <th>Configuration</th>
+                    <th>Specialization</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (flats.length> 0) { %>
+                    <% flats.forEach((flat, index)=> { %>
+                      <tr class="animate__animated animate__fadeInUp" style="animation-delay: <%= index * 0.05 %>s">
+                        <td class="text-muted small fw-bold">
+                          <%= index + 1 %>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="badge bg-light text-primary border p-2 rounded-3 me-2">
+                              <i class="fa-regular fa-building"></i>
+                            </div>
+                            <span class="fw-bold text-dark">
+                              <%= flat.blockName %>
+                            </span>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="badge-premium">Unit #<%= flat.flatNo %></span>
+                        </td>
+                        <td>
+                          <span class="text-secondary fw-semibold">
+                            <i class="fa-solid fa-ruler-combined me-1 text-muted"></i>
+                            <%= flat.flatSize %> <small>
+                                <%= flat.sizeUnit %>
+                              </small>
+                          </span>
+                        </td>
+                        <td>
+                          <div class="small fw-medium text-dark">
+                            <%= flat.numberOfBedroom %>B / <%= flat.numberOfHall %>H / <%= flat.numberOfKitchen %>K
+                          </div>
+                        </td>
+                        <td>
+                          <div class="text-muted small"
+                            style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                            title="<%= flat.specialization %>">
+                            <%= flat.specialization || "—" %>
+                          </div>
+                        </td>
+                        <td class="text-center">
+                          <div class="d-flex justify-content-center gap-1">
+                            <a href="/flat/update/<%= flat._id %>" class="action-icon btn-edit" title="Edit Flat">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <form action="/flat/delete/<%= flat._id %>" method="POST" style="display:inline"
+                              onsubmit="return confirm('Permanently delete Flat <%= flat.flatNo %>?');">
+                              <button class="action-icon btn-delete border-0" type="submit">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="7" class="text-center py-5">
+                              <i class="fa-solid fa-folder-open d-block mb-3 fs-1 opacity-25 text-muted"></i>
+                              No flats registered in the system
+                            </td>
+                          </tr>
+                          <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+
+    <script>
+      function filterFlats() {
+        const value = document.getElementById("flatSearch").value.toLowerCase();
+        const rows = document.querySelectorAll("#flatTable tbody tr:not(:has([colspan]))");
+        rows.forEach(row => {
+          row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+        });
+      }
+    </script>
+</body>
+
+</html>

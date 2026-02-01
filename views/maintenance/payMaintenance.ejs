@@ -1,0 +1,223 @@
+<style>
+    :root {
+        --pay-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .pay-hero {
+        background: var(--pay-gradient);
+        padding: 3rem;
+        border-radius: 24px;
+        color: white;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pay-hero::after {
+        content: '';
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        filter: blur(50px);
+    }
+
+    .payment-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #f1f5f9;
+    }
+
+    .bill-info-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .pay-input {
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 1rem 1.25rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .pay-input:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        outline: none;
+    }
+
+    .btn-complete-pay {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        width: 100%;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-complete-pay:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    }
+
+    .flat-tag {
+        background: #10b981;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="/maintenance" class="text-decoration-none text-muted fw-bold small">
+            <i class="fa-solid fa-arrow-left me-2"></i>Back to Treasury
+        </a>
+    </div>
+
+    <!-- Pay Hero -->
+    <div class="pay-hero animate__animated animate__fadeIn">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="fw-bold mb-2">Settle Maintenance</h1>
+                <p class="lead mb-0 opacity-75">Processing payment for <b>
+                        <%= record.month %>
+                    </b> bill.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <div class="bg-white bg-opacity-20 p-3 rounded-4 d-inline-block backdrop-blur-md">
+                    <div class="small opacity-75">Bill Amount</div>
+                    <div class="fw-bold fs-3">₹<%= record.amount %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-8">
+            <div class="payment-card animate__animated animate__fadeInUp">
+                <div class="row g-4">
+                    <!-- Information Section -->
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Bill Details</h5>
+                        <div class="bill-info-box mb-4">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="p-3 bg-white rounded-3 shadow-sm text-primary">
+                                    <i class="fa-solid fa-building-user fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="text-muted extra-small">Occupancy Details</div>
+                                    <div class="fw-bold">Flat <%= record.flatId?.flatNo %>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <%= record.flatId?.blockName %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="p-3 bg-white rounded-3 shadow-sm text-success">
+                                    <i class="fa-solid fa-user-check fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="text-muted extra-small">Resident Information</div>
+                                    <div class="fw-bold">
+                                        <% let displayName=record.residentName || (record.residentId?.firstName ?
+                                            (record.residentId.firstName + ' ' + (record.residentId.lastName || '' )) :
+                                            null); if (!displayName && locals.activeStays) { const
+                                            currentStay=activeStays.find(s=> (s.flat._id || s.flat).toString() ===
+                                            (record.flatId?._id || record.flatId)?.toString());
+                                            if (currentStay) {
+                                            const res = currentStay.residentType === 'member' ? currentStay.member :
+                                            currentStay.tenant;
+                                            if (res) displayName = (res.firstName + ' ' + (res.lastName || '')).trim() +
+                                            " (Current)";
+                                            }
+                                            }
+                                            %>
+                                            <%= displayName || "N/A" %>
+                                    </div>
+                                    <span class="flat-tag mt-1 d-inline-block">
+                                        <%= record.residentType %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="p-3 bg-white rounded-3 shadow-sm text-danger">
+                                    <i class="fa-solid fa-clock-rotate-left fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="text-muted extra-small">Payment History</div>
+                                    <div class="fw-bold text-danger">₹<%= record.pendingAmount || record.amount %>
+                                            Outstanding</div>
+                                    <div class="small text-muted">Already Paid: ₹<%= record.paidAmount || 0 %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Section -->
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Process Settlement</h5>
+                        <form action="/maintenance/pay/<%= record._id %>" method="POST">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Payment Amount
+                                    (₹)</label>
+                                <input type="number" name="paidAmount" class="form-control pay-input"
+                                    placeholder="Enter amount" max="<%= record.pendingAmount || record.amount %>"
+                                    value="<%= record.pendingAmount || record.amount %>" required>
+                                <div class="mt-2 text-muted small">
+                                    <i class="fa-solid fa-circle-info me-1"></i> Maximum payable is ₹<%=
+                                        record.pendingAmount || record.amount %>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-muted small text-uppercase">Payment Method</label>
+                                <div class="d-flex gap-2">
+                                    <input type="radio" class="btn-check" name="method" id="cash" checked>
+                                    <label class="btn btn-outline-success flex-fill rounded-3 py-2"
+                                        for="cash">Cash</label>
+
+                                    <input type="radio" class="btn-check" name="method" id="online">
+                                    <label class="btn btn-outline-success flex-fill rounded-3 py-2"
+                                        for="online">Online</label>
+
+                                    <input type="radio" class="btn-check" name="method" id="cheque">
+                                    <label class="btn btn-outline-success flex-fill rounded-3 py-2"
+                                        for="cheque">Cheque</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-complete-pay mt-2">
+                                <i class="fa-solid fa-shield-check me-2"></i>Confirm & Settle
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

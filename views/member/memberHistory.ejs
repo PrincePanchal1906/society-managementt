@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+        <title>Member History | Society Management</title>
+        <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --glass-bg: rgba(255, 255, 255, 0.95);
+                --text-main: #2c3e50;
+                --text-muted: #7f8c8d;
+            }
+
+            body {
+                font-family: 'Outfit', sans-serif;
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                min-height: 100vh;
+                color: var(--text-main);
+            }
+
+            .premium-card {
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                margin-bottom: 2rem;
+            }
+
+            .header-section {
+                padding: 1.5rem 2rem;
+                background: var(--primary-gradient);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .header-content {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .header-icon {
+                font-size: 2rem;
+                background: rgba(255, 255, 255, 0.2);
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 18px;
+            }
+
+            .fancy-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+
+            .fancy-table thead th {
+                background: #f8fafc;
+                padding: 1.2rem 1rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 1px;
+                color: var(--text-muted);
+                border-bottom: 2px solid #edf2f7;
+            }
+
+            .fancy-table tbody td {
+                padding: 1.2rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #edf2f7;
+                transition: all 0.2s;
+            }
+
+            .fancy-table tbody tr:hover td {
+                background: #fcfdfe;
+            }
+
+            .btn-view {
+                background: #f0f4ff;
+                color: #667eea;
+                padding: 6px 14px;
+                border-radius: 10px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.2s;
+                border: 1px solid transparent;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .btn-view:hover {
+                background: #667eea;
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            .badge-date {
+                background: #f1f5f9;
+                color: #475569;
+                padding: 4px 10px;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .badge-transfer {
+                background: #fff1f2;
+                color: #e11d48;
+                padding: 4px 10px;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                font-weight: 600;
+            }
+
+            .back-btn {
+                background: white;
+                color: var(--text-main);
+                padding: 0.6rem 1.2rem;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                margin-bottom: 1.5rem;
+                border: 1px solid #e2e8f0;
+            }
+
+            .back-btn:hover {
+                background: #f8fafc;
+                transform: translateX(-5px);
+                color: #667eea;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-lg-2">
+                <%- include("../partials/leftSidebar") %>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-10 p-4 min-vh-100">
+                <div class="max-width-container mx-auto" style="max-width: 1100px;">
+
+                    <a href="/member/memberManagement" class="back-btn animate__animated animate__fadeInLeft">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Members
+                    </a>
+
+                    <div class="premium-card animate__animated animate__fadeInUp">
+                        <!-- Header -->
+                        <div class="header-section">
+                            <div class="header-content">
+                                <div class="header-icon">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                </div>
+                                <div>
+                                    <h3 class="fw-bold mb-0">Member History</h3>
+                                    <p class="mb-0 small opacity-75 text-uppercase fw-bold">Block: <%= blockName %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Area -->
+                        <div class="card-body p-0">
+                            <% if (members.length===0) { %>
+                                <div class="text-center py-5">
+                                    <i class="fa-solid fa-folder-open mb-3 fs-1 opacity-25"></i>
+                                    <p class="text-muted">No history found for this block.</p>
+                                </div>
+                                <% } else { %>
+                                    <div class="table-responsive">
+                                        <table class="fancy-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="ps-4">#</th>
+                                                    <th>Member Name</th>
+                                                    <th>Purchase Date</th>
+                                                    <th>Mobile Number</th>
+                                                    <th>Documents</th>
+                                                    <th class="pe-4">Transfer Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% members.forEach((m, i)=> { %>
+                                                    <tr>
+                                                        <td class="ps-4 fw-bold text-muted">
+                                                            <%= i + 1 %>
+                                                        </td>
+                                                        <td>
+                                                            <div class="fw-bold text-dark">
+                                                                <%= m.firstName %>
+                                                                    <%= m.lastName %>
+                                                            </div>
+                                                            <div class="small text-muted">Past Resident</div>
+                                                        </td>
+                                                        <td>
+                                                            <% if (m.purchaseDate) { %>
+                                                                <span class="badge-date">
+                                                                    <i class="fa-regular fa-calendar-check me-1"></i>
+                                                                    <%= new
+                                                                        Date(m.purchaseDate).toLocaleDateString(undefined,
+                                                                        { day: '2-digit' , month: 'short' ,
+                                                                        year: 'numeric' }) %>
+                                                                </span>
+                                                                <% } else { %>
+                                                                    <span class="text-muted">-</span>
+                                                                    <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <div class="small fw-medium">
+                                                                <i
+                                                                    class="fa-solid fa-phone me-2 opacity-50 text-success"></i>
+                                                                <%= m.firstMobileNo || '-' %>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <% if (m.documents && m.documents.length> 0) { %>
+                                                                <div class="d-flex flex-wrap gap-2">
+                                                                    <% m.documents.forEach(doc=> { %>
+                                                                        <a href="/document-master/document-viewer/member/<%= m._id %>"
+                                                                            class="btn-view">
+                                                                            <i class="fa-solid fa-eye"></i>
+                                                                            <%= doc.documentType %>
+                                                                        </a>
+                                                                        <% }) %>
+                                                                </div>
+                                                                <% } else { %>
+                                                                    <span class="text-muted small">No Documents</span>
+                                                                    <% } %>
+                                                        </td>
+                                                        <td class="pe-4">
+                                                            <% if (m.transferDate) { %>
+                                                                <span class="badge-transfer">
+                                                                    <i
+                                                                        class="fa-solid fa-arrow-right-from-bracket me-1"></i>
+                                                                    <%= new
+                                                                        Date(m.transferDate).toLocaleDateString(undefined,
+                                                                        { day: '2-digit' , month: 'short' ,
+                                                                        year: 'numeric' }) %>
+                                                                </span>
+                                                                <% } else { %>
+                                                                    <span class="text-muted">-</span>
+                                                                    <% } %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../partials/script") %>
+</body>
+
+</html>

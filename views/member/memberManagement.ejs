@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Member Management | Society Management</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <!-- Content Area -->
+      <div class="col-lg-10 p-4 min-vh-100">
+        <div class="premium-card p-2 animate__animated animate__fadeIn">
+          <!-- Header Section -->
+          <div class="header-section">
+            <div>
+              <h3 class="fw-bold mb-0"><i class="fa-solid fa-users-rectangle me-2"></i>Member Management</h3>
+              <p class="mb-0 small opacity-75 text-uppercase fw-bold">Registry of All Society Members</p>
+            </div>
+            <a href="/member/addMember" class="btn-premium">
+              <i class="fa-solid fa-plus-circle me-1"></i> Add Member
+            </a>
+          </div>
+
+          <div class="px-3 pb-3">
+            <!-- Search Container -->
+            <div class="search-container mt-4">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="searchInput" class="search-input"
+                placeholder="Search by name, flat, mobile or email...">
+            </div>
+
+            <% if (typeof error !=='undefined' && error) { %>
+              <div class="alert alert-danger alert-dismissible fade show mt-3 border-0 shadow-sm" role="alert"
+                style="border-radius: 12px; background: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+                <%= error %>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              <% } %>
+
+                <!-- Table Area -->
+                <div class="table-responsive">
+                  <table class="table fancy-table" id="memberTable">
+                    <thead>
+                      <tr>
+                        <th>Unit / Address</th>
+                        <th>Member Name</th>
+                        <th>Contact Info</th>
+                        <th>Purchase Date</th>
+                        <th class="text-center">Documents</th>
+                        <th class="text-center">Actions</th>
+                        <th class="text-center">Transfer</th>
+                        <th class="text-center">Transfer History</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (members.length===0) { %>
+                        <tr>
+                          <td colspan="8" class="text-center py-5">
+                            <i class="fa-solid fa-folder-open d-block mb-3 fs-1 opacity-25 text-muted"></i>
+                            No society members registered yet
+                          </td>
+                        </tr>
+                        <% } else { %>
+                          <% members.forEach((m, index)=> { %>
+                            <tr class="animate__animated animate__fadeInUp" data-delay="<%= index * 0.05 %>s">
+                              <td>
+                                <span class="badge-premium">
+                                  <%= m.blockName %> - <%= m.flatNo %>
+                                </span>
+                              </td>
+                              <td>
+                                <div class="fw-bold text-dark">
+                                  <%= m.firstName %>
+                                    <%= m.lastName %>
+                                </div>
+                                <div class="text-muted small text-uppercase font-monospace" style="font-size: 0.7rem;">
+                                  <%= (m.documents && m.documents.length> 0) ? m.documents[0].documentType : 'No ID' %>
+                                    Verified
+                                </div>
+                              </td>
+                              <td>
+                                <div class="small fw-bold"><i
+                                    class="fa-solid fa-phone me-2 opacity-50 text-success"></i>
+                                  <%= m.firstMobileNo %>
+                                </div>
+                                <div class="text-muted small"><i class="fa-solid fa-envelope me-2 opacity-50"></i>
+                                  <%= m.email || "N/A" %>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="small fw-medium">
+                                  <i class="fa-regular fa-calendar-check me-2 opacity-50"></i>
+                                  <%= new Date(m.purchaseDate).toLocaleDateString("en-IN", { day: '2-digit' ,
+                                    month: 'short' , year: 'numeric' }) %>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <a href="/document-master/document-viewer/member/<%= m._id %>"
+                                  class="action-icon btn-view" title="View Documents">
+                                  <i class="fa-solid fa-file-invoice"></i>
+                                </a>
+                              </td>
+                              <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                  <a href="/member/update/<%= m._id %>" class="action-icon btn-edit"
+                                    title="Update Profile">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                  </a>
+                                  <a href="/member/delete/<%= m._id %>" class="action-icon btn-delete"
+                                    title="Remove Member"
+                                    onclick="return confirm('Permanently archive this member record?')">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                  </a>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <a href="/transferMember/<%= m._id %>" class="action-icon btn-view"
+                                  title="View Documents">
+                                  <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                                </a>
+                              </td>
+                              <td class="text-center">
+                                <a href="/transferMember/history/<%= m._id %>" class="action-icon btn-view"
+                                  title="View Documentsss">
+                                  <i class="fa-solid fa-clock-rotate-left"></i>
+                                </a>
+                              </td>
+                            </tr>
+                            <% }) %>
+                              <% } %>
+                    </tbody>
+                  </table>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+
+    <script>
+      document.getElementById("searchInput").addEventListener("keyup", function () {
+        const value = this.value.toLowerCase();
+        const rows = document.querySelectorAll("#memberTable tbody tr:not(:has([colspan]))");
+
+        rows.forEach(row => {
+          const text = row.innerText.toLowerCase();
+          row.style.display = text.includes(value) ? "" : "none";
+        });
+      });
+    </script>
+</body>
+
+</html>

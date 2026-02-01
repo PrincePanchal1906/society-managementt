@@ -1,0 +1,275 @@
+<style>
+    :root {
+        --maintenance-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .maintenance-hero {
+        background: var(--maintenance-gradient);
+        padding: 3rem;
+        border-radius: 24px;
+        color: white;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .maintenance-hero::after {
+        content: '';
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        filter: blur(50px);
+    }
+
+    .stat-mini-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .stat-mini-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-shadow);
+        border-color: #6366f1;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 24px;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #f1f5f9;
+    }
+
+    .status-pill {
+        padding: 0.4rem 1rem;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-paid {
+        background: #f0fdf4;
+        color: #15803d;
+    }
+
+    .status-partial {
+        background: #fffbeb;
+        color: #b45309;
+    }
+
+    .status-unpaid {
+        background: #fef2f2;
+        color: #b91c1c;
+    }
+
+    .action-btn-pay {
+        background: #6366f1;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.25rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .action-btn-pay:hover {
+        background: #4f46e5;
+        color: white;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .flat-badge {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 6px;
+        font-weight: 700;
+        color: #475569;
+    }
+
+    .animate-row {
+        animation: fadeIn 0.5s ease forwards;
+        opacity: 0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+<div class="container py-4">
+    <!-- Premium Hero -->
+    <div class="maintenance-hero animate__animated animate__fadeIn">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="fw-bold mb-2">Maintenance Treasury</h1>
+                <p class="lead mb-0 opacity-75">Overview of society bills, collections, and outstanding dues.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="/maintenance/generate-all" class="btn btn-light btn-lg fw-bold px-4 rounded-4 shadow-sm">
+                    <i class="fa-solid fa-plus-circle me-2"></i>Generate Bills
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <% let totalBills=records ? records.length : 0; let paidCount=records ? records.filter(r=> r.status ===
+        'Paid').length : 0;
+        let unpaidCount = records ? records.filter(r => r.status === 'Unpaid').length : 0;
+        let totalRevenue = records ? records.reduce((acc, r) => acc + (r.paidAmount || 0), 0) : 0;
+        %>
+
+        <!-- Records Table -->
+        <div class="table-container animate__animated animate__fadeInUp">
+            <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+                <h5 class="fw-bold mb-0">Maintenance Records Feed</h5>
+                <div class="text-muted small">Total Records: <%= totalBills %>
+                </div>
+            </div>
+
+            <div class="table-responsive w-100">
+                <table class="table table-hover align-middle w-100" style="table-layout: fixed;">
+                    <thead>
+                        <tr class="text-muted small text-uppercase">
+                            <th class="border-0 pb-3" style="width: 12%;">Flat Detail</th>
+                            <th class="border-0 pb-3" style="width: 24%;">Resident</th>
+                            <th class="border-0 pb-3 text-center" style="width: 10%;">Date</th>
+                            <th class="border-0 pb-3" style="width: 12%;">Bill Amount</th>
+                            <th class="border-0 pb-3" style="width: 10%;">Received</th>
+                            <th class="border-0 pb-3" style="width: 10%;">Pending</th>
+                            <th class="border-0 pb-3" style="width: 10%;">Status</th>
+                            <th class="border-0 pb-3 text-end" style="width: 12%;">Operation</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% if (records && records.length> 0) { %>
+
+                            <% for (let index=0; index < records.length; index++) { %>
+                                <% const r=records[records.length - 1 - index]; const rowDelay=(index * 0.05) + 's' ; %>
+
+                                    <tr class="animate-row" style="animation-delay: <%= rowDelay %>">
+                                        <td class="py-3">
+                                            <span class="flat-badge mb-1 d-inline-block">
+                                                <%= r.flatId?.flatNo || "N/A" %>
+                                            </span>
+                                            <div class="text-muted extra-small" style="font-size: 0.75rem;">
+                                                <%= r.flatId?.blockName || "General" %>
+                                            </div>
+                                        </td>
+
+                                        <td class="py-3">
+                                            <div class="fw-bold" style="font-size: 0.9rem;">
+                                                <% let displayName="N/A" ; if (r.residentName) {
+                                                    displayName=r.residentName; } else if (r.residentId?.firstName) {
+                                                    displayName=(r.residentId.firstName + ' ' + (r.residentId.lastName
+                                                    || '' )).trim(); } else if (locals.activeStays && (r.flatId?._id ||
+                                                    r.flatId)) { const flatIdStr=(r.flatId?._id || r.flatId).toString();
+                                                    const currentStay=locals.activeStays.find(s=>
+                                                    ((s.flat?._id || s.flat)?.toString() === flatIdStr)
+                                                    );
+
+                                                    if (currentStay) {
+                                                    if (currentStay.residentType === 'member' && currentStay.member) {
+                                                    displayName = (currentStay.member.firstName + ' ' +
+                                                    (currentStay.member.lastName || '')).trim() + " (Current)";
+                                                    }
+                                                    else if (currentStay.residentType === 'tenant' &&
+                                                    currentStay.tenant) {
+                                                    displayName = (currentStay.tenant.firstName + ' ' +
+                                                    (currentStay.tenant.lastName || '')).trim() + " (Current)";
+                                                    }
+                                                    }
+                                                    }
+                                                    %>
+
+                                                    <%= displayName %>
+                                            </div>
+
+                                            <span class="badge rounded-pill bg-light text-dark extra-small"
+                                                style="font-size: 0.65rem;">
+                                                <%= r.residentType || "Unknown" %>
+                                            </span>
+                                        </td>
+
+                                        <td class="py-3 text-center">
+                                            <span class="fw-bold text-primary">
+                                                <%= r.month %>
+                                            </span>
+                                        </td>
+
+                                        <td class="py-3">
+                                            <span class="fw-bold">₹<%= r.amount %></span>
+                                        </td>
+
+                                        <td class="py-3">
+                                            <span class="text-success small">₹<%= r.paidAmount || 0 %></span>
+                                        </td>
+
+                                        <td class="py-3">
+                                            <span class="text-danger small">₹<%= r.pendingAmount || r.amount %></span>
+                                        </td>
+
+                                        <td class="py-3">
+                                            <% if (r.status==="Paid" ) { %>
+                                                <span class="status-pill status-paid">Paid</span>
+                                                <% } else if (r.status==="Partial" || r.status==="Partially Paid" ) { %>
+                                                    <span class="status-pill status-partial">Partial</span>
+                                                    <% } else { %>
+                                                        <span class="status-pill status-unpaid">Unpaid</span>
+                                                        <% } %>
+                                        </td>
+
+                                        <td class="py-3 text-end">
+                                            <% if (r.status !=="Paid" ) { %>
+                                                <a href="/maintenance/pay/<%= r._id %>" class="action-btn-pay">
+                                                    <i class="fa-solid fa-credit-card"></i> Pay
+                                                </a>
+                                                <% } else { %>
+                                                    <span class="text-muted small">
+                                                        <i class="fa-solid fa-circle-check text-success"></i> Settled
+                                                    </span>
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="8" class="text-center py-5">
+                                                    <div class="text-muted">
+                                                        <i class="fa-solid fa-folder-open fs-1 opacity-25 mb-3"></i>
+                                                        <p class="mb-0">No maintenance bills generated yet.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+</div>

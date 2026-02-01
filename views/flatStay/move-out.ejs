@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("../partials/head") %>
+  <meta charset="UTF-8">
+  <title>Move Out</title>
+</head>
+
+<body class="bg-light">
+
+<div class="container-fluid">
+  <div class="row g-0">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="col-2">
+      <%- include("../partials/leftSidebar") %>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-10 d-flex align-items-center justify-content-center min-vh-100">
+
+      <div class="card shadow rounded-4" style="width:400px;">
+        <div class="card-body p-4">
+
+          <div class="text-center mb-4">
+            <h4 class="fw-bold">🚪 Move Out</h4>
+            <small class="text-muted">
+              Please select move out date
+            </small>
+          </div>
+
+          <!-- ✅ FIXED ACTION -->
+          <form
+            method="POST"
+            action="/flatstayMaster/move-out/<%= flatStay._id %>"
+          >
+
+            <!-- MOVE OUT DATE -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                Move Out Date
+              </label>
+              <input
+                type="date"
+                name="stayTo"
+                class="form-control"
+                required
+              >
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="d-grid">
+              <button class="btn btn-danger rounded-pill">
+                Confirm Move Out
+              </button>
+            </div>
+
+          </form>
+             <% if (typeof error !== "undefined") { %>
+            <div class="alert alert-danger text-center">
+              <%= error %>
+            </div>
+          <% } %>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

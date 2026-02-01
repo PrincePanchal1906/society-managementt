@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Add Member | Society Management</title>
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --text-main: #2c3e50;
+        --text-muted: #7f8c8d;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+
+      .premium-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 850px;
+        overflow: hidden;
+      }
+
+      .header-section {
+        background: var(--primary-gradient);
+        padding: 2.5rem 1rem;
+        text-align: center;
+        color: white;
+      }
+
+      .header-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .icon-input {
+        position: relative;
+      }
+
+      .icon-input i {
+        position: absolute;
+        left: 1.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        transition: color 0.3s;
+        z-index: 5;
+      }
+
+      .form-control,
+      .form-select {
+        padding: 0.75rem 1rem 0.75rem 2.8rem;
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        background-color: #f8fafc;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background-color: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .form-control:focus+i,
+      .form-select:focus+i {
+        color: #667eea;
+      }
+
+      .error-text {
+        color: #e74c3c;
+        font-size: 0.72rem;
+        font-weight: 500;
+        margin-top: 2px;
+        min-height: 16px;
+      }
+
+      .btn-premium {
+        background: var(--primary-gradient);
+        border: none;
+        color: white !important;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 12px -2px rgba(118, 75, 162, 0.25);
+      }
+
+      .btn-premium:hover {
+        transform: translateY(-2px);
+        background: var(--primary-gradient);
+        box-shadow: 0 15px 20px -4px rgba(118, 75, 162, 0.35);
+      }
+
+      .back-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        transition: 0.2s;
+        background: white;
+        padding: 8px 16px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .back-link:hover {
+        color: var(--text-main);
+        transform: translateX(-5px);
+        background: #f8fafc;
+      }
+
+      .section-divider {
+        border-bottom: 2px solid #edf2f7;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        color: #667eea;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+      }
+
+      .overflow-auto-custom {
+        max-height: 80vh;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #667eea #f1f1f1;
+      }
+
+      /* Dynamic Document Styles */
+      .document-row {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .document-row:hover {
+        border-color: #667eea;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      }
+
+      .remove-row-btn {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+        transition: all 0.2s;
+        z-index: 10;
+      }
+
+      .remove-row-btn:hover {
+        transform: scale(1.1) rotate(90deg);
+        background: #dc2626;
+      }
+
+      .add-doc-btn {
+        background: white;
+        border: 2px dashed #667eea;
+        color: #667eea;
+        padding: 1rem;
+        border-radius: 12px;
+        width: 100%;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 2rem;
+      }
+
+      .add-doc-btn:hover {
+        background: #f5f7ff;
+        border-style: solid;
+        transform: translateY(-2px);
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <div class="col-lg-10 min-vh-100 d-flex flex-column align-items-center justify-content-center py-5">
+        <div style="width: 100%; max-width: 850px;">
+          <a href="/member/memberManagement" class="back-link animate__animated animate__fadeInLeft">
+            <i class="fa-solid fa-arrow-left"></i> Back to Members
+          </a>
+
+          <div class="premium-card animate__animated animate__fadeInUp">
+            <div class="header-section">
+              <div class="header-icon">
+                <i class="fa-solid fa-user-plus"></i>
+              </div>
+              <h3 class="fw-bold mb-1">Add New Member</h3>
+              <p class="mb-0 opacity-75 small text-uppercase fw-bold">Society Membership Registration</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+              <% if (typeof error !=='undefined' && error) { %>
+                <div
+                  class="alert alert-danger border-0 rounded-4 text-center mb-4 py-3 shadow-sm animate__animated animate__shakeX">
+                  <i class="fa-solid fa-circle-exclamation me-2"></i>
+                  <%= error %>
+                </div>
+                <% } %>
+
+                  <div class="overflow-auto-custom px-2">
+                    <form method="POST" action="/member/addMember" enctype="multipart/form-data"
+                      onsubmit="return validateForm()">
+
+                      <!-- UNIT LOCATOR -->
+                      <div class="section-divider">Unit Assignment</div>
+                      <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                          <label class="form-label">Block <span class="text-danger">*</span></label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-building"></i>
+                            <select name="blockName" id="blockSelect" class="form-select"
+                              onchange="validateSelect(this, 'blockErr')">
+                              <option value="">Select Block</option>
+                              <% blocks.forEach(b=> { %>
+                                <option value="<%= b.blockName %>" <%=(typeof oldData !=='undefined' &&
+                                  oldData.blockName===b.blockName) ? 'selected' : '' %>>
+                                  <%= b.blockName %>
+                                </option>
+                                <% }) %>
+                            </select>
+                          </div>
+                          <div id="blockErr" class="error-text"></div>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">Flat <span class="text-danger">*</span></label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-house-chimney"></i>
+                            <select name="flatNo" id="flatSelect" class="form-select"
+                              onchange="validateSelect(this, 'flatErr')">
+                              <option value="">Select Flat</option>
+                            </select>
+                          </div>
+                          <div id="flatErr" class="error-text"></div>
+                        </div>
+                      </div>
+
+                      <!-- PERSONAL DETAILS -->
+                      <div class="section-divider">Personal Details</div>
+                      <div class="row g-4 mb-5">
+                        <div class="col-md-4">
+                          <label class="form-label">First Name <span class="text-danger">*</span></label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="firstName" name="firstName" class="form-control" placeholder="John"
+                              value="<%= (typeof oldData !== 'undefined' && oldData.firstName) ? oldData.firstName : '' %>"
+                              oninput="validateFirstName(this); this.value=this.value.replace(/[^A-Za-z ]/g,'')">
+                          </div>
+                          <div id="firstNameErr" class="error-text"></div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label">Middle Name</label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-user-large"></i>
+                            <input type="text" id="middleName" name="middleName" class="form-control" placeholder="Q."
+                              value="<%= (typeof oldData !== 'undefined' && oldData.middleName) ? oldData.middleName : '' %>"
+                              oninput="this.value=this.value.replace(/[^A-Za-z ]/g,''); validateOptionalName(this,'middleNameErr')">
+                          </div>
+                          <div id="middleNameErr" class="error-text"></div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-user-group"></i>
+                            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Doe"
+                              value="<%= (typeof oldData !== 'undefined' && oldData.lastName) ? oldData.lastName : '' %>"
+                              oninput="validateLastName(this); this.value=this.value.replace(/[^A-Za-z ]/g,'')">
+                          </div>
+                          <div id="lastNameErr" class="error-text"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                          <label class="form-label">Primary Mobile <span class="text-danger">*</span></label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text" id="mobile" name="firstMobileNo" class="form-control" maxlength="10"
+                              placeholder="10-digit number"
+                              value="<%= (typeof oldData !== 'undefined' && oldData.firstMobileNo) ? oldData.firstMobileNo : '' %>"
+                              oninput="this.value=this.value.replace(/[^0-9]/g,''); validateMobile(this)">
+                          </div>
+                          <div id="mobileErr" class="error-text"></div>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">Alternate Mobile</label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-phone-volume"></i>
+                            <input type="text" id="altMobile" name="secondMobileNo" class="form-control" maxlength="10"
+                              placeholder="Optional"
+                              value="<%= (typeof oldData !== 'undefined' && oldData.secondMobileNo) ? oldData.secondMobileNo : '' %>"
+                              oninput="this.value=this.value.replace(/[^0-9]/g,''); validateAltMobile(this)">
+                          </div>
+                          <div id="altMobileErr" class="error-text"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                          <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="email" name="email" class="form-control"
+                              placeholder="john@example.com"
+                              value="<%= (typeof oldData !== 'undefined' && oldData.email) ? oldData.email : '' %>"
+                              oninput="validateEmail(this)">
+                          </div>
+                          <div id="emailErr" class="error-text"></div>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">Purchase Date <span class="text-danger">*</span></label>
+                          <div class="icon-input">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <input type="date" id="purchaseDate" name="purchaseDate" class="form-control"
+                              max="<%= new Date().toISOString().split('T')[0] %>"
+                              value="<%= (typeof oldData !== 'undefined' && oldData.purchaseDate) ? oldData.purchaseDate : '' %>"
+                              onchange="validateRequired(this, 'dateErr')">
+                          </div>
+                          <div id="dateErr" class="error-text"></div>
+                        </div>
+                      </div>
+
+                      <!-- IDS -->
+                      <div class="section-divider">Identity Proof Documents</div>
+
+                      <div id="documentsContainer">
+                        <!-- Initial Row -->
+                        <div class="document-row animate__animated animate__fadeIn">
+                          <div class="row g-4">
+
+                            <div class="col-md-6">
+                              <label class="form-label">Document Type <span class="text-danger">*</span></label>
+                              <div class="icon-input">
+                                <i class="fa-solid fa-id-badge"></i>
+                                <select name="documents[0][documentType]" class="form-select doc-type" required
+                                  onchange="validateSelect(this, 'docTypeErr0'); preventDuplicateDocTypes();">
+
+                                  <option value="">Select Document Type</option>
+
+                                  <option value="AADHAR" <%=(typeof oldData !=='undefined' && oldData.documents &&
+                                    oldData.documents[0] && oldData.documents[0].documentType==='AADHAR' ) ? 'selected'
+                                    : '' %>>
+                                    Aadhaar
+                                  </option>
+
+                                  <option value="DL" <%=(typeof oldData !=='undefined' && oldData.documents &&
+                                    oldData.documents[0] && oldData.documents[0].documentType==='DL' ) ? 'selected' : ''
+                                    %>>
+                                    Driving Licence
+                                  </option>
+
+                                  <option value="PAN" <%=(typeof oldData !=='undefined' && oldData.documents &&
+                                    oldData.documents[0] && oldData.documents[0].documentType==='PAN' ) ? 'selected'
+                                    : '' %>>
+                                    PAN Card
+                                  </option>
+
+                                  <option value="PASSPORT" <%=(typeof oldData !=='undefined' && oldData.documents &&
+                                    oldData.documents[0] && oldData.documents[0].documentType==='PASSPORT' )
+                                    ? 'selected' : '' %>>
+                                    Passport
+                                  </option>
+                                  <option value="TRANSFER DOCUMENT" <%=(typeof oldData !=='undefined' &&
+                                    oldData.documents && oldData.documents[0] &&
+                                    oldData.documents[0].documentType==='TRANSFER DOCUMENT' ) ? 'selected' : '' %>>
+                                    Transfer Document
+                                  </option>
+
+                                </select>
+                              </div>
+                              <div id="docTypeErr0" class="error-text"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                              <label class="form-label">Upload Files <span class="text-danger">*</span></label>
+                              <div class="icon-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                                <input type="file" name="documents[0][files]" class="form-control doc-files"
+                                  accept="image/png, image/jpeg, image/jpg" multiple>
+                                <!-- ❌ required REMOVED -->
+                              </div>
+
+                              <div id="filesErr0" class="error-text"></div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      <button type="button" class="add-doc-btn" onclick="addDocumentRow()">
+                        <i class="fa-solid fa-plus-circle"></i> Add Another Document Type
+                      </button>
+
+                      <div class="col-12 mt-5">
+                        <button type="submit" class="btn-premium w-100 shadow-lg">
+                          <i class="fa-solid fa-floppy-disk me-2"></i> Finalize Membership
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+    <script>
+      function validateFirstName(el) {
+        const err = document.getElementById("firstNameErr");
+        if (el.value.trim() === "") { err.innerText = "First name required"; return false; }
+        if (!/^[A-Za-z ]+$/.test(el.value)) { err.innerText = "Only letters allowed"; return false; }
+        err.innerText = ""; return true;
+      }
+
+      function validateLastName(el) {
+        const err = document.getElementById("lastNameErr");
+        if (el.value.trim() === "") { err.innerText = "Last name required"; return false; }
+        if (!/^[A-Za-z ]+$/.test(el.value)) { err.innerText = "Only letters allowed"; return false; }
+        err.innerText = ""; return true;
+      }
+
+      function validateOptionalName(el, id) {
+        const err = document.getElementById(id);
+        if (el.value !== "" && !/^[A-Za-z ]+$/.test(el.value)) {
+          err.innerText = "Only letters allowed"; return false;
+        }
+        err.innerText = ""; return true;
+      }
+
+      function validateMobile(el) {
+        const err = document.getElementById("mobileErr");
+        if (!/^[6-9][0-9]{9}$/.test(el.value)) {
+          err.innerText = "Must start with 6-9 (10 digits)";
+          return false;
+        }
+        err.innerText = ""; return true;
+      }
+
+      function validateAltMobile(el) {
+        const err = document.getElementById("altMobileErr");
+        if (el.value !== "" && !/^[6-9][0-9]{9}$/.test(el.value)) {
+          err.innerText = "Invalid mobile number"; return false;
+        }
+        err.innerText = ""; return true;
+      }
+
+      function validateEmail(el) {
+        const err = document.getElementById("emailErr");
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!re.test(el.value)) { err.innerText = "Invalid email format"; return false; }
+        err.innerText = ""; return true;
+      }
+
+      function validateRequired(el, id) {
+        const err = document.getElementById(id);
+        if (!el.value || el.value.trim() === "") {
+          err.innerText = "This field is required"; return false;
+        }
+        err.innerText = ""; return true;
+      }
+
+      function validateSelect(el, id) {
+        const err = document.getElementById(id);
+        if (!el.value) { err.innerText = "Selection required"; return false; }
+        err.innerText = ""; return true;
+      }
+
+      // ✅ NEW – duplicate documentType prevent
+      function preventDuplicateDocTypes() {
+        const selects = document.querySelectorAll(".doc-type");
+        const used = [];
+        selects.forEach(sel => {
+          if (sel.value) {
+            if (used.includes(sel.value)) {
+              alert("Same document type cannot be selected twice");
+              sel.value = "";
+            } else {
+              used.push(sel.value);
+            }
+          }
+        });
+      }
+
+      let rowCount = 1;
+
+      function addDocumentRow() {
+        const container = document.getElementById("documentsContainer");
+        const currentIndex = rowCount;
+        const row = document.createElement("div");
+
+        row.className = "document-row animate__animated animate__zoomIn";
+        row.innerHTML = `
+      <button type="button" class="remove-row-btn"
+        onclick="this.parentElement.remove()" title="Remove this document">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <label class="form-label">Document Type <span class="text-danger">*</span></label>
+          <div class="icon-input">
+            <i class="fa-solid fa-id-badge"></i>
+            <select name="documents[${currentIndex}][documentType]"
+              class="form-select doc-type"
+              onchange="validateSelect(this, 'docTypeErr${currentIndex}'); preventDuplicateDocTypes();"
+              required>
+              <option value="">Select ID Type</option>
+              <option value="AADHAR">Aadhaar</option>
+              <option value="DL">Driving Licence</option>
+              <option value="PAN">PAN Card</option>
+              <option value="PASSPORT">Passport</option>
+            </select>
+          </div>
+          <div id="docTypeErr${currentIndex}" class="error-text"></div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Upload Files <span class="text-danger">*</span></label>
+          <div class="icon-input">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <input type="file"
+              name="documents[${currentIndex}][files]"
+              class="form-control doc-files"
+              accept="image/png, image/jpeg, image/jpg"
+              multiple> <!-- ✅ required REMOVED -->
+          </div>
+          <div id="filesErr${currentIndex}" class="error-text"></div>
+        </div>
+      </div>
+    `;
+
+        container.appendChild(row);
+        rowCount++;
+      }
+
+      function validateForm() {
+        const v1 = validateSelect(document.getElementById("blockSelect"), "blockErr");
+        const v2 = validateSelect(document.getElementById("flatSelect"), "flatErr");
+        const v3 = validateFirstName(document.getElementById("firstName"));
+        const v4 = validateLastName(document.getElementById("lastName"));
+        const v5 = validateMobile(document.getElementById("mobile"));
+        const v6 = validateEmail(document.getElementById("email"));
+        const v7 = validateRequired(document.getElementById("purchaseDate"), "dateErr");
+
+        let docsValid = true;
+
+        document.querySelectorAll(".document-row").forEach((row, idx) => {
+          const select = row.querySelector(".doc-type");
+          const fileInput = row.querySelector(".doc-files");
+
+          if (!select.value) {
+            document.getElementById(`docTypeErr${idx}`).innerText = "Selection required";
+            docsValid = false;
+          }
+
+          if (!fileInput.files || fileInput.files.length === 0) {
+            document.getElementById(`filesErr${idx}`).innerText = "At least one file required";
+            docsValid = false;
+          }
+        });
+
+        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && docsValid)) {
+          const firstErr = document.querySelector(".error-text:not(:empty)");
+          if (firstErr) {
+            firstErr.closest('.row')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return false;
+        }
+        return true;
+      }
+    </script>
+
+    <script>
+      const blockSelect = document.getElementById("blockSelect");
+      const flatSelect = document.getElementById("flatSelect");
+
+      blockSelect.addEventListener("change", async function () {
+        await loadFlats(this.value);
+      });
+
+      async function loadFlats(blockName, selectedFlat = null) {
+        flatSelect.innerHTML = '<option value="">Loading...</option>';
+        if (!blockName) {
+          flatSelect.innerHTML = '<option value="">Select Flat</option>';
+          return;
+        }
+        try {
+          const res = await fetch(`/member/availableFlats/${blockName}`);
+          const flats = await res.json();
+          fillFlats(flats, selectedFlat);
+        } catch (err) {
+          flatSelect.innerHTML = '<option value="">Failed to load</option>';
+        }
+      }
+
+      function fillFlats(flats, selectedFlat) {
+        flatSelect.innerHTML = '<option value="">Select Flat</option>';
+        flats.forEach(f => {
+          const opt = document.createElement("option");
+          opt.value = f.flatNo;
+          opt.textContent = `Flat ${f.flatNo}`;
+          if (selectedFlat == f.flatNo) opt.selected = true;
+          flatSelect.appendChild(opt);
+        });
+      }
+
+      const prefillBlock = "<%= (typeof oldData !== 'undefined' && oldData.blockName) ? oldData.blockName : '' %>";
+      const prefillFlat = "<%= (typeof oldData !== 'undefined' && oldData.flatNo) ? oldData.flatNo : '' %>";
+
+      if (prefillBlock) {
+        document.addEventListener("DOMContentLoaded", () => {
+          loadFlats(prefillBlock, prefillFlat);
+        });
+      }
+    </script>
+
+</body>
+
+</html>

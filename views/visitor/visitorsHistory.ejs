@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+        <title>Visitor History | Society Management</title>
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-lg-2">
+                <%- include("../partials/leftSidebar") %>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-10 p-4 min-vh-100">
+                <div class="premium-card p-2 animate__animated animate__fadeIn">
+                    <!-- Header Section -->
+                    <div class="header-section" style="background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);">
+                        <div>
+                            <h3 class="fw-bold mb-0 text-white"><i
+                                    class="fa-solid fa-clock-rotate-left me-2"></i>Visitor History Logs</h3>
+                            <p class="mb-0 small opacity-75 text-uppercase fw-bold">Permanent archive of all society
+                                visits</p>
+                        </div>
+                        <a href="/visitor/visitorManagement" class="btn-premium">
+                            <i class="fa-solid fa-chevron-left me-1"></i> Dashboard
+                        </a>
+                    </div>
+
+                    <div class="px-3 pb-3">
+                        <div class="table-responsive">
+                            <table id="historyTable" class="table fancy-table w-100 mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Visit Date</th>
+                                        <th>Visitor Details</th>
+                                        <th>Flat No</th>
+                                        <th>Visit Purpose</th>
+                                        <th>Time In</th>
+                                        <th>Time Out</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (allVisitors && allVisitors.length> 0) { %>
+                                        <% allVisitors.forEach((v, index)=> { %>
+                                            <tr class="animate__animated animate__fadeInUp"
+                                                style="animation-delay: <%= index * 0.02 %>s">
+                                                <td>
+                                                    <div class="small fw-bold text-dark">
+                                                        <i class="fa-regular fa-calendar-days me-2 opacity-50"></i>
+                                                        <%= v.exitDate ? new
+                                                            Date(v.exitDate).toLocaleDateString("en-IN") : "—" %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="fw-bold text-dark">
+                                                        <%= v.visitorName %>
+                                                    </div>
+                                                    <div class="text-muted small">
+                                                        <%= v.relation %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-premium bg-light text-dark border">
+                                                        <%= v.flatNo %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="small text-muted">
+                                                        <%= v.purpose %>
+                                                    </div>
+                                                </td>
+                                                <td class="text-success small fw-bold">
+                                                    <i class="fa-solid fa-arrow-right-to-bracket me-1 opacity-50"></i>
+                                                    <%= v.entryTime %>
+                                                </td>
+                                                <td class="text-danger small fw-bold">
+                                                    <i class="fa-solid fa-arrow-right-from-bracket me-1 opacity-50"></i>
+                                                    <%= v.exitTime %>
+                                                </td>
+                                                <td class="text-danger small fw-bold">
+                                                    <i class="fa-solid fa-arrow-right-from-bracket me-1 opacity-50"></i>
+                                                    <%= v.exitDate ? new Date(v.exitDate).toLocaleDateString("en-IN")
+                                                        : "—" %>
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge-premium bg-light text-success"
+                                                        style="font-size: 0.7rem;">
+                                                        <i class="fa-solid fa-circle-check me-1"></i> COMPLETED
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../partials/script") %>
+
+        <!-- DataTables JS -->
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#historyTable').DataTable({
+                    "order": [[0, "desc"]],
+                    "pageLength": 10,
+                    "language": {
+                        "search": "",
+                        "searchPlaceholder": "Search visitor history...",
+                        "paginate": {
+                            "previous": "<i class='fa-solid fa-chevron-left'></i>",
+                            "next": "<i class='fa-solid fa-chevron-right'></i>"
+                        }
+                    },
+                    "dom": '<"d-flex justify-content-between align-items-center mb-4 mt-2"f<"small text-muted"i>>t<"d-flex justify-content-center mt-4"p>',
+                    "drawCallback": function () {
+                        $('.dataTables_filter input').addClass('search-input').css('width', '350px');
+                        $('.dataTables_filter').prepend('<i class="fa-solid fa-magnifying-glass text-muted position-absolute" style="margin-left: 1rem; margin-top: 0.9rem; z-index: 10;"></i>');
+                    }
+                });
+            });
+        </script>
+</body>
+
+</html>

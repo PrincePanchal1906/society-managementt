@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+        <title>Transfer Member | Society Management</title>
+        <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --glass-bg: rgba(255, 255, 255, 0.95);
+                --text-main: #2c3e50;
+                --text-muted: #7f8c8d;
+                --success-gradient: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            }
+
+            body {
+                font-family: 'Outfit', sans-serif;
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                min-height: 100vh;
+                color: var(--text-main);
+            }
+
+            .premium-card {
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                margin-bottom: 2rem;
+            }
+
+            .header-section {
+                padding: 1.5rem 2rem;
+                background: var(--primary-gradient);
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .header-icon {
+                font-size: 2rem;
+                background: rgba(255, 255, 255, 0.2);
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 18px;
+            }
+
+            .section-label {
+                font-size: 0.75rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                color: var(--text-muted);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .section-label::after {
+                content: "";
+                height: 1px;
+                flex: 1;
+                background: #e2e8f0;
+            }
+
+            .form-control-premium {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 0.75rem 1rem;
+                font-weight: 500;
+                transition: all 0.2s;
+            }
+
+            .form-control-premium:focus {
+                background: white;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                outline: none;
+            }
+
+            .form-control-premium[readonly] {
+                background: #f1f5f9;
+                color: #64748b;
+                cursor: not-allowed;
+            }
+
+            .btn-premium-success {
+                background: var(--success-gradient);
+                color: white;
+                border: none;
+                padding: 0.8rem 2rem;
+                border-radius: 14px;
+                font-weight: 700;
+                transition: all 0.3s;
+                box-shadow: 0 10px 15px -3px rgba(72, 187, 120, 0.3);
+            }
+
+            .btn-premium-success:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 20px 25px -5px rgba(72, 187, 120, 0.4);
+                color: white;
+            }
+
+            .back-btn {
+                background: white;
+                color: var(--text-main);
+                padding: 0.6rem 1.2rem;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                margin-bottom: 1.5rem;
+                border: 1px solid #e2e8f0;
+            }
+
+            .back-btn:hover {
+                background: #f8fafc;
+                transform: translateX(-5px);
+                color: #667eea;
+            }
+
+            .form-label {
+                font-weight: 600;
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+                color: #475569;
+            }
+
+            .info-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 10px 15px;
+                background: #eff6ff;
+                color: #3b82f6;
+                border-radius: 12px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                border: 1px solid #dbeafe;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-lg-2">
+                <%- include("../partials/leftSidebar") %>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-10 p-4 min-vh-100">
+                <div>
+                    <% if(error){ %>
+                        <div class="alert alert-danger">
+                            <%= error %>
+                        </div>
+                        <% } %>
+                </div>
+                <div class="max-width-container mx-auto" style="max-width: 900px;">
+
+                    <a href="javascript:history.back()" class="back-btn animate__animated animate__fadeInLeft">
+                        <i class="fa-solid fa-arrow-left"></i> Back
+                    </a>
+
+                    <div class="premium-card animate__animated animate__fadeInUp">
+                        <!-- Header -->
+                        <div class="header-section">
+                            <div class="header-icon">
+                                <i class="fa-solid fa-right-left"></i>
+                            </div>
+                            <div>
+                                <h3 class="fw-bold mb-0">Member Transfer</h3>
+                                <p class="mb-0 small opacity-75 text-uppercase fw-bold">Initiate Property
+                                    Transfer</p>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4 p-lg-5">
+                            <!-- CURRENT MEMBER INFO -->
+                            <div class="section-label">
+                                <span>Current Resident Details</span>
+                            </div>
+
+                            <div class="row g-4 mb-5">
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name</label>
+                                    <div class="info-badge w-100">
+                                        <i class="fa-solid fa-user"></i>
+                                        <%= oldMember.firstName %>
+                                            <%= oldMember.lastName %>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Flat No</label>
+                                    <div class="info-badge w-100">
+                                        <i class="fa-solid fa-door-closed"></i>
+                                        <%= oldMember.flatNo %>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Mobile</label>
+                                    <div class="info-badge w-100">
+                                        <i class="fa-solid fa-phone"></i>
+                                        <%= oldMember.firstMobileNo %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TRANSFER FORM -->
+                            <div class="section-label">
+                                <span>Transfer Execution</span>
+                            </div>
+
+                            <form action="/transferMember/transferMember/<%= oldMember._id %>" method="POST">
+                                <input type="hidden" name="oldMemberId" value="<%= oldMember._id %>">
+
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Transfer Date</label>
+                                        <input type="date" name="transferDate" class="form-control-premium w-100"
+                                            max="<%= new Date().toISOString().split('T')[0] %>" required>
+                                        <div class="small text-muted mt-2">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            Official date for property handover
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Reason for Transfer</label>
+                                        <select name="transferReason" class="form-control-premium w-100" required>
+                                            <option value="" disabled selected>-- Select Transfer Reason --
+                                            </option>
+                                            <option value="Sold">Property Sold</option>
+                                            <option value="Family Transfer">Internal Family Transfer</option>
+                                            <option value="Other">Other Reason</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 pt-4 border-top d-flex justify-content-end align-items-center gap-3">
+                                    <p class="mb-0 small text-muted fst-italic">
+                                        * This action will mark the current member as 'Transfer' and release the
+                                        flat.
+                                    </p>
+                                    <button type="submit" class="btn-premium-success">
+                                        <i class="fa-solid fa-check-double me-2"></i> Confirm & Release Flat
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../partials/script") %>
+
+        <script>
+            // Date constraint alert (optional enhancement)
+            const dateInput = document.querySelector('input[type="date"]');
+            if (dateInput) {
+                dateInput.addEventListener('change', function () {
+                    const today = new Date().toISOString().split('T')[0];
+                    if (this.value > today) {
+                        this.value = today;
+                    }
+                });
+            }
+        </script>
+</body>
+
+</html>

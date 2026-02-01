@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Block Management | Society Management</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <!-- Content Area -->
+      <div class="col-lg-10 p-4 min-vh-100">
+        <div class="premium-card p-2 animate__animated animate__fadeIn">
+          <!-- Header Section -->
+          <div class="header-section">
+            <div>
+              <h3 class="fw-bold mb-0"><i class="fa-solid fa-cubes me-2"></i>Block Management</h3>
+              <p class="mb-0 small opacity-75 text-uppercase fw-bold">Manage society blocks and configurations</p>
+            </div>
+            <a href="/block/addBlock" class="btn-premium">
+              <i class="fa-solid fa-plus-circle me-1"></i> Add Block
+            </a>
+          </div>
+
+          <div class="px-3 pb-3">
+            <!-- Quick Stats (Mini) -->
+            <div class="row g-3 mb-4 mt-2">
+              <div class="col-md-3">
+                <div class="stat-card p-3 d-flex align-items-center gap-3">
+                  <div class="stat-icon icon-blue mb-0" style="width: 40px; height: 40px; font-size: 1.2rem;">
+                    <i class="fa-solid fa-building"></i>
+                  </div>
+                  <div>
+                    <h6 class="text-muted small mb-0">Total Blocks</h6>
+                    <h4 class="fw-bold mb-0">
+                      <%= totalBlocks %>
+                    </h4>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="stat-card p-3 d-flex align-items-center gap-3">
+                  <div class="stat-icon icon-green mb-0" style="width: 40px; height: 40px; font-size: 1.2rem;">
+                    <i class="fa-solid fa-door-open"></i>
+                  </div>
+                  <div>
+                    <h6 class="text-muted small mb-0">Total Flats</h6>
+                    <h4 class="fw-bold mb-0">
+                      <%= totalFlats %>
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table Area -->
+            <div class="table-responsive">
+              <table class="table fancy-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Block Name</th>
+                    <th>Flats Count</th>
+                    <th>Configuration</th>
+                    <th>Standard Size</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (blocks.length===0) { %>
+                    <tr>
+                      <td colspan="6" class="text-center py-5">
+                        <i class="fa-solid fa-folder-open d-block mb-3 fs-1 opacity-25 text-muted"></i>
+                        No society blocks registered yet
+                      </td>
+                    </tr>
+                    <% } else { %>
+                      <% blocks.forEach((block, index)=> { %>
+                        <tr class="animate__animated animate__fadeInUp" style="animation-delay: <%= index * 0.05 %>s">
+                          <td class="text-muted small fw-bold">
+                            <%= index + 1 %>
+                          </td>
+                          <td><span class="fw-bold text-dark">
+                              <%= block.blockName %>
+                            </span></td>
+                          <td><span class="badge-premium">
+                              <%= block.numberOfFlats %> Units
+                            </span></td>
+                          <td>
+                            <div class="d-flex gap-2">
+                              <span class="badge bg-light text-dark border py-2 px-3 rounded-3" title="Bedrooms">
+                                <i class="fa-solid fa-bed me-1 text-muted"></i>
+                                <%= block.numberOfBedroom || "—" %>
+                              </span>
+                              <span class="badge bg-light text-dark border py-2 px-3 rounded-3" title="Halls">
+                                <i class="fa-solid fa-couch me-1 text-muted"></i>
+                                <%= block.numberOfHall || "—" %>
+                              </span>
+                              <span class="badge bg-light text-dark border py-2 px-3 rounded-3" title="Kitchens">
+                                <i class="fa-solid fa-utensils me-1 text-muted"></i>
+                                <%= block.numberOfKitchen || "—" %>
+                              </span>
+                            </div>
+                          </td>
+                          <td>
+                            <% if(block.sizeOfFlats) { %>
+                              <span class="text-secondary fw-medium">
+                                <i class="fa-solid fa-ruler-combined me-1 text-muted"></i>
+                                <%= block.sizeOfFlats %>
+                                  <%= block.sizeUnit %>
+                              </span>
+                              <% } else { %>
+                                <span class="text-muted small">Not set</span>
+                                <% } %>
+                          </td>
+                          <td class="text-center">
+                            <a href="/block/update/<%= block._id %>" class="action-icon btn-edit" title="Update Block">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a href="/block/delete/<%= block._id %>" class="action-icon btn-delete" title="Delete Block"
+                              onclick="return confirm('Remove this block and all its data?')">
+                              <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                          </td>
+                        </tr>
+                        <% }) %>
+                          <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+</body>
+
+</html>

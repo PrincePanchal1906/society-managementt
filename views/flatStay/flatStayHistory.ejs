@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Flat Stay History</title>
+
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        border-radius: 18px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      .badge-member {
+        background: #0d6efd;
+      }
+
+      .badge-tenant {
+        background: #fd7e14;
+      }
+
+      .badge-cron {
+        background: #6f42c1;
+      }
+
+      .badge-manual {
+        background: #198754;
+      }
+
+      .doc-link {
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+</head>
+
+<body class="bg-light">
+  <div class="container-fluid">
+    <div class="row g-0">
+
+      <div class="col-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <div class="col-10 p-4">
+        <div class="glass-card p-4">
+
+          <h3 class="fw-bold mb-4">📜 Flat Stay History</h3>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Resident</th>
+                  <th>Type</th>
+                  <th>Mobile</th>
+                  <th>Stay Period</th>
+                  <th>Duration</th>
+                  <th>Document</th>
+                  <th>Ended By</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% stays.forEach((s, i)=> {
+                  const from = new Date(s.stayFrom);
+                  const to = new Date(s.stayTo);
+                  const days = Math.ceil((to - from) / (1000*60*60*24));
+                  %>
+                  <tr>
+                    <td>
+                      <%= i + 1 %>
+                    </td>
+
+                    <!-- NAME -->
+                    <td class="fw-semibold">
+                      <% if (s.residentType==="member" ) { %>
+                        <%= s.member?.firstName %>
+                          <%= s.member?.lastName || "" %>
+                            <% } else { %>
+                              <%= s.tenant?.firstName %>
+                                <%= s.tenant?.lastName || "" %>
+                                  <% } %>
+                    </td>
+
+                    <!-- TYPE -->
+                    <td>
+                      <span class="badge <%= s.residentType === 'member' ? 'badge-member' : 'badge-tenant' %>">
+                        <%= s.residentType %>
+                      </span>
+                    </td>
+
+                    <!-- MOBILE -->
+                    <td>
+                      <% if (s.residentType==="member" ) { %>
+                        <%= s.member?.firstMobileNo %>
+                          <% } else { %>
+                            <%= s.tenant?.firstMobileNo %>
+                              <% } %>
+                    </td>
+
+                    <!-- STAY -->
+                    <td>
+                      <%= from.toDateString() %> → <%= to.toDateString() %>
+                    </td>
+
+                    <!-- DURATION -->
+                    <td>
+                      <strong>
+                        <%= days %>
+                      </strong> days
+                    </td>
+
+                    <!-- DOCUMENT -->
+                    <td>
+                      <% if (s.filePath) { %>
+                        <a class="doc-link" href="<%= s.residentType === 'member'
+       ? `/document-master/document-viewer/member/${s.member?._id}`
+       : `/document-master/document-viewer/tenant/${s.tenant?._id}` %>" target="">
+                          📄 <%= s.documentType || "View File" %>
+                        </a>
+                        <% } else { %>
+
+                          —
+                          <% } %>
+                    </td>
+
+                    <!-- ENDED BY -->
+                    <td>
+                      <span class="badge <%= s.endedBy === 'CRON' ? 'badge-cron' : 'badge-manual' %>">
+                        <%= s.endedBy %>
+                      </span>
+                    </td>
+                  </tr>
+                  <% }) %>
+
+                    <% if (stays.length===0) { %>
+                      <tr>
+                        <td colspan="8" class="text-center text-muted">
+                          No history available
+                        </td>
+                      </tr>
+                      <% } %>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head") %>
+        <title>prince panchal | Designing Resume</title>
+
+        <!-- Dependencies -->
+        <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+
+        <style>
+            :root {
+                --primary: #00f260;
+                --secondary: #0575E6;
+                --bg-dark: #050505;
+                --glass: rgba(255, 255, 255, 0.03);
+                --border: rgba(255, 255, 255, 0.1);
+                --text-main: #ffffff;
+                --text-muted: #a0a0a0;
+            }
+
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                background-color: var(--bg-dark);
+                color: var(--text-main);
+                font-family: 'Space Grotesk', sans-serif;
+                overflow-x: hidden;
+                scroll-behavior: smooth;
+            }
+
+            #three-canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+
+            #root {
+                position: relative;
+                z-index: 1;
+            }
+
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: var(--bg-dark);
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--primary);
+            }
+
+            /* Glass Cards */
+            .glass-card {
+                background: var(--glass);
+                backdrop-filter: blur(12px);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 2rem;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .glass-card:hover {
+                border-color: var(--primary);
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px rgba(0, 242, 96, 0.1);
+            }
+
+            /* Typography */
+            .gradient-text {
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .section-title {
+                font-size: 3rem;
+                font-weight: 700;
+                margin-bottom: 3rem;
+                text-align: center;
+            }
+
+            .nav-glass {
+                background: rgba(5, 5, 5, 0.5);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border);
+                padding: 1rem 0;
+                position: fixed;
+                width: 100%;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .hero-section {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding-top: 80px;
+            }
+
+            .skill-badge {
+                display: inline-block;
+                padding: 0.5rem 1.2rem;
+                background: var(--glass);
+                border: 1px solid var(--border);
+                border-radius: 50px;
+                margin: 0.5rem;
+                font-weight: 500;
+                transition: 0.3s;
+            }
+
+            .skill-badge:hover {
+                background: var(--primary);
+                color: black;
+                border-color: var(--primary);
+            }
+
+            .timeline-item {
+                position: relative;
+                padding-left: 30px;
+                margin-bottom: 2rem;
+                border-left: 2px solid var(--border);
+            }
+
+            .timeline-item::before {
+                content: '';
+                position: absolute;
+                left: -7px;
+                top: 0;
+                width: 12px;
+                height: 12px;
+                background: var(--primary);
+                border-radius: 50%;
+            }
+
+            .contact-input {
+                background: var(--glass);
+                border: 1px solid var(--border);
+                color: white;
+                padding: 1rem;
+                border-radius: 10px;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .contact-input:focus {
+                outline: none;
+                border-color: var(--primary);
+            }
+
+            button.glow-btn {
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                color: white;
+                border: none;
+                padding: 1rem 2.5rem;
+                border-radius: 50px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.3s;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            button.glow-btn:hover {
+                box-shadow: 0 0 20px rgba(0, 242, 96, 0.5);
+                transform: scale(1.05);
+            }
+        </style>
+</head>
+
+<body>
+    <canvas id="three-canvas"></canvas>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- COMPONENTS ---
+
+        const Navbar = () => (
+            <nav className="nav-glass">
+                <div className="container d-flex justify-content-between align-items-center">
+                    <a className="fs-3 fw-bold text-decoration-none gradient-text" href="#">SM.</a>
+                    <div className="d-none d-md-flex gap-4">
+                        <a href="#about" className="text-white text-decoration-none opacity-75 hover-opacity-100">About</a>
+                        <a href="#experience" className="text-white text-decoration-none opacity-75">Resume</a>
+                        <a href="#projects" className="text-white text-decoration-none opacity-75">Work</a>
+                        <a href="#contact" className="text-white text-decoration-none opacity-75">Contact</a>
+                    </div>
+                </div>
+            </nav>
+        );
+
+        const Hero = () => (
+            <section className="hero-section container" id="home">
+                <div>
+                    <h5 className="text-uppercase tracking-wider mb-4 gradient-text fw-bold">Full Stack Developer</h5>
+                    <h1 className="display-1 fw-bold mb-4">
+                        Crafting Digital <br />
+                        <span className="gradient-text">Experiences</span>
+                    </h1>
+                    <p className="lead text-muted mx-auto mb-5" style={{ maxWidth: '600px' }}>
+                        I build high-performance web applications with a focus on clean code and exceptional user experience.
+                    </p>
+                    <div className="d-flex justify-content-center gap-3">
+                        <button className="glow-btn">Hire Me</button>
+                        <a href="#projects" className="btn btn-outline-light rounded-pill px-4 py-3 border-secondary">View Projects</a>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Experience = () => (
+            <section className="container py-5" id="experience">
+                <h2 className="section-title">Professional <span className="gradient-text">Resume</span></h2>
+                <div className="row">
+                    <div className="col-md-6 mb-4">
+                        <div className="glass-card">
+                            <h3 className="mb-4">Experience</h3>
+                            <div className="timeline-item">
+                                <h5 className="fw-bold">Senior Web Developer</h5>
+                                <p className="text-primary small">TechFlow Solutions | 2022 - Present</p>
+                                <p className="text-muted">Leading the front-end development of enterprise-level dashboard systems using React and Three.js.</p>
+                            </div>
+                            <div className="timeline-item">
+                                <h5 className="fw-bold">Frontend Engineer</h5>
+                                <p className="text-primary small">Creative Agency | 2020 - 2022</p>
+                                <p className="text-muted">Developed responsive websites and interactive animations for high-profile clients.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="glass-card">
+                            <h3 className="mb-4">Skills</h3>
+                            <div className="mb-4">
+                                <h6 className="mb-3 text-muted">Frontend</h6>
+                                <div>
+                                    {['React.js', 'Next.js', 'Three.js', 'Tailwind CSS', 'Redux', 'TypeScript'].map(s => (
+                                        <span key={s} className="skill-badge">{s}</span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <h6 className="mb-3 text-muted">Backend</h6>
+                                <div>
+                                    {['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Docker', 'AWS'].map(s => (
+                                        <span key={s} className="skill-badge">{s}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Projects = () => {
+            const projects = [
+                { title: 'AI Dashboard', tech: 'React, OpenAI', desc: 'Predictive analytics for retail.' },
+                { title: '3D Portfolio', tech: 'Three.js, GSAP', desc: 'Immersive visual experience.' },
+                { title: 'Sociey Manager', tech: 'Node, EJS', desc: 'Management system for housing.' }
+            ];
+
+            return (
+                <section className="container py-5" id="projects">
+                    <h2 className="section-title">Latest <span className="gradient-text">Work</span></h2>
+                    <div className="row g-4">
+                        {projects.map((p, i) => (
+                            <div key={i} className="col-md-4">
+                                <div className="glass-card h-100">
+                                    <div className="mb-3 d-flex justify-content-between">
+                                        <i className="fa-solid fa-code text-primary fs-4"></i>
+                                        <i className="fa-solid fa-arrow-up-right-from-square text-muted"></i>
+                                    </div>
+                                    <h4 className="fw-bold">{p.title}</h4>
+                                    <p className="text-muted small mb-3">{p.desc}</p>
+                                    <p className="small text-primary">{p.tech}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            );
+        };
+
+        const Contact = () => (
+            <section className="container py-5 mb-5" id="contact">
+                <div className="glass-card text-center" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    <h2 className="mb-4">Let's build something <span className="gradient-text">extraordinary</span>.</h2>
+                    <p className="text-muted mb-5">Currently open for freelance projects and full-time opportunities.</p>
+                    <form className="row g-3">
+                        <div className="col-md-6">
+                            <input className="contact-input" placeholder="Your Name" />
+                        </div>
+                        <div className="col-md-6">
+                            <input className="contact-input" placeholder="Email Address" />
+                        </div>
+                        <div className="col-12">
+                            <textarea className="contact-input" rows="4" placeholder="Your Message"></textarea>
+                        </div>
+                        <div className="col-12">
+                            <button className="glow-btn w-100" type="button">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        );
+
+        const Footer = () => (
+            <footer className="py-5 text-center border-top border-secondary border-opacity-10">
+                <p className="text-muted">© 2024 Sujan Mistry. All rights reserved.</p>
+                <div className="d-flex justify-content-center gap-4 fs-4 mt-3">
+                    <a href="#" className="text-white opacity-50"><i className="fa-brands fa-github"></i></a>
+                    <a href="#" className="text-white opacity-50"><i className="fa-brands fa-linkedin"></i></a>
+                    <a href="#" className="text-white opacity-50"><i className="fa-brands fa-twitter"></i></a>
+                </div>
+            </footer>
+        );
+
+        const App = () => {
+            return (
+                <div className="bg-dark">
+                    <Navbar />
+                    <Hero />
+                    <Experience />
+                    <Projects />
+                    <Contact />
+                    <Footer />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        // --- THREE.JS BACKGROUND ---
+
+        const initThree = () => {
+            const canvas = document.querySelector('#three-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Particles
+            const particlesCount = 2000;
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 8;
+            }
+
+            const particlesGeometry = new THREE.BufferGeometry();
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.005,
+                color: '#00f260',
+                transparent: true,
+                opacity: 0.8
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            camera.position.z = 2;
+
+            // Mouse Interaction
+            let mouseX = 0;
+            let mouseY = 0;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            });
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+
+                particlesMesh.rotation.y += 0.001;
+
+                if (mouseX > 0) {
+                    particlesMesh.rotation.x += (mouseY * 0.00002);
+                    particlesMesh.rotation.y += (mouseX * 0.00002);
+                }
+
+                renderer.render(scene, camera);
+            };
+
+            animate();
+
+            // Resize handle
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+
+        initThree();
+    </script>
+</body>
+
+</html>

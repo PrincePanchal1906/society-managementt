@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Add Visitor | Society Management</title>
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --text-main: #2c3e50;
+        --text-muted: #7f8c8d;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+
+      .premium-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        overflow: hidden;
+      }
+
+      .header-section {
+        background: var(--primary-gradient);
+        padding: 2.5rem 1rem;
+        text-align: center;
+        color: white;
+      }
+
+      .header-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .date-time-display {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 12px;
+        backdrop-filter: blur(5px);
+        margin-top: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .input-group-text {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        color: var(--text-muted);
+        padding: 0 1.2rem;
+      }
+
+      .form-control,
+      .form-select {
+        padding: 0.75rem 1.2rem;
+        border-radius: 0 12px 12px 0;
+        border: 1.5px solid #e2e8f0;
+        background-color: #f8fafc;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background-color: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .btn-premium {
+        background: var(--primary-gradient);
+        border: none;
+        color: white !important;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 12px -2px rgba(118, 75, 162, 0.25);
+      }
+
+      .btn-premium:hover {
+        transform: translateY(-2px);
+        background: var(--primary-gradient);
+
+        box-shadow: 0 15px 20px -4px rgba(118, 75, 162, 0.35);
+      }
+
+      .back-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        transition: 0.2s;
+        background: white;
+        padding: 8px 16px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .back-link:hover {
+        color: var(--text-main);
+        transform: translateX(-5px);
+        background: #f8fafc;
+      }
+    </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <!-- Content -->
+      <div class="col-lg-10 p-4 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+        <div style="width: 100%; max-width: 800px;">
+          <a href="/visitor/visitorManagement" class="back-link animate__animated animate__fadeInLeft">
+            <i class="fa-solid fa-arrow-left me-2"></i> Back to Control Center
+          </a>
+
+          <div class="premium-card animate__animated animate__fadeInUp">
+            <div class="header-section">
+              <div class="header-icon">
+                <i class="fa-solid fa-person-walking-luggage"></i>
+              </div>
+              <h3 class="fw-bold mb-0">Visitor Registration</h3>
+              <p class="mb-0 small opacity-75 text-uppercase fw-bold">Daily Entry Logging</p>
+
+              <div class="date-time-display">
+                <div id="liveDate" class="small fw-bold text-white mb-0"></div>
+                <div id="liveTime" class="h4 mb-0 fw-bold"></div>
+              </div>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+              <% if (locals.error) { %>
+                <div
+                  class="alert alert-danger border-0 rounded-4 text-center mb-4 py-3 shadow-sm animate__animated animate__shakeX">
+                  <i class="fa-solid fa-circle-exclamation me-2"></i>
+                  <%= error %>
+                </div>
+                <% } %>
+
+                  <form method="POST" action="/visitor/addVisitor">
+                    <div class="row g-4">
+                      <!-- Person Info -->
+                      <div class="col-md-6">
+                        <label class="form-label">Visitor Full Name</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-user-tag text-success"></i></span>
+                          <input type="text" name="visitorName" class="form-control" placeholder="Enter guest name"
+                            value="<%= locals.oldData?.visitorName || '' %>"
+                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g,'')" />
+
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Destination (Flat No)</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-house-user text-primary"></i></span>
+                          <input type="text" name="flatNo" class="form-control" placeholder="e.g. A-101"
+                            value="<%= locals.oldData?.flatNo || '' %>">
+                        </div>
+                      </div>
+
+                      <!-- Details -->
+                      <div class="col-md-6">
+                        <label class="form-label">Visit Purpose</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-clipboard-question text-info"></i></span>
+                          <input type="text" name="purpose" class="form-control" placeholder="Meeting/Parcel/etc."
+                            value="<%= locals.oldData?.purpose || '' %>">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Relation / Company</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-user-group text-warning"></i></span>
+                          <select name="relation" class="form-select">
+                            <option value="">-- Select Relation --</option>
+                            <option value="Family" <%=locals.oldData?.relation==="Family" ? "selected" : "" %>>Family
+                              Member</option>
+                            <option value="Friend" <%=locals.oldData?.relation==="Friend" ? "selected" : "" %>>Social
+                              Friend</option>
+                            <option value="Delivery" <%=locals.oldData?.relation==="Delivery" ? "selected" : "" %>
+                              >Delivery Partner</option>
+                            <option value="Maintenance" <%=locals.oldData?.relation==="Maintenance" ? "selected" : "" %>
+                              >Maintenance Crew</option>
+                            <option value="Guest" <%=locals.oldData?.relation==="Guest" ? "selected" : "" %>>Other Guest
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Timing -->
+                      <div class="col-md-4">
+                        <label class="form-label">Entry Date</label>
+                        <input type="date" id="visDate" name="date" class="form-control"
+                          style="border-radius: 12px; border-left: 1.5px solid #e2e8f0; border-right: 1.5px solid #e2e8f0;"
+                          value="<%= locals.oldData?.date || '' %>">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">In-Time</label>
+                        <input type="time" id="visIn" name="entryTime" class="form-control"
+                          style="border-radius: 12px; border-left: 1.5px solid #e2e8f0; border-right: 1.5px solid #e2e8f0;"
+                          value="<%= locals.oldData?.entryTime || '' %>">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Exit-Time (Optional)</label>
+                        <input type="time" name="exitTime" class="form-control"
+                          style="border-radius: 12px; border-left: 1.5px solid #e2e8f0; border-right: 1.5px solid #e2e8f0;"
+                          value="<%= locals.oldData?.exitTime || '' %>">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Exit-Date (Optional)</label>
+                        <input type="date" name="exitDate" class="form-control"
+                          style="border-radius: 12px; border-left: 1.5px solid #e2e8f0; border-right: 1.5px solid #e2e8f0;"
+                          value="<%= locals.oldData?.exitDate || '' %>">
+                      </div>
+
+                      <div class="col-12 mt-5">
+                        <button type="submit" class="btn-premium w-100">
+                          <i class="fa-solid fa-id-badge me-2"></i> Confirm Visitor Entry
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+    <script>
+      function updateClock() {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+        const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('liveDate').innerText = dateStr;
+        document.getElementById('liveTime').innerText = timeStr;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // Auto-fill now
+      const dInput = document.getElementById("visDate");
+      const tInput = document.getElementById("visIn");
+      if (dInput && !dInput.value) dInput.value = new Date().toISOString().split("T")[0];
+      if (tInput && !tInput.value) tInput.value = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    </script>
+</body>
+
+</html>

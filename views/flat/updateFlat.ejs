@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Update Flat | Society Management</title>
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --text-main: #2c3e50;
+        --text-muted: #7f8c8d;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+
+      .premium-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 550px;
+        overflow: hidden;
+      }
+
+      .header-section {
+        background: var(--primary-gradient);
+        padding: 2.5rem 1rem;
+        text-align: center;
+        color: white;
+      }
+
+      .header-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .icon-input {
+        position: relative;
+      }
+
+      .icon-input i {
+        position: absolute;
+        left: 1.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        transition: color 0.3s;
+        z-index: 5;
+      }
+
+      .form-control,
+      .form-select {
+        padding: 0.75rem 1rem 0.75rem 2.8rem;
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        background-color: #f8fafc;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background-color: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .form-control:focus+i,
+      .form-select:focus+i {
+        color: #667eea;
+      }
+
+      .btn-premium {
+        background: var(--primary-gradient);
+        border: none;
+        color: white !important;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 12px -2px rgba(118, 75, 162, 0.25);
+      }
+
+      .btn-premium:hover {
+        transform: translateY(-2px);
+        background: var(--primary-gradient);
+        box-shadow: 0 15px 20px -4px rgba(118, 75, 162, 0.35);
+      }
+
+      .back-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        transition: 0.2s;
+        background: white;
+        padding: 8px 16px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .back-link:hover {
+        color: var(--text-main);
+        transform: translateX(-5px);
+        background: #f8fafc;
+      }
+
+      .section-divider {
+        border-bottom: 2px solid #edf2f7;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.4rem;
+        color: #667eea;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.75rem;
+      }
+    </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <div class="col-lg-10 min-vh-100 d-flex flex-column align-items-center justify-content-center py-5">
+        <div style="width: 100%; max-width: 550px;">
+          <a href="/flat/flatsManagement" class="back-link animate__animated animate__fadeInLeft">
+            <i class="fa-solid fa-arrow-left"></i> Back to Flats
+          </a>
+
+          <div class="premium-card animate__animated animate__fadeInUp">
+            <div class="header-section">
+              <div class="header-icon">
+                <i class="fa-solid fa-building-circle-check"></i>
+              </div>
+              <h3 class="fw-bold mb-1">Update Flat</h3>
+              <p class="mb-0 opacity-75 small text-uppercase">Modify Unit Information</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+              <% if (typeof error !=='undefined' && error) { %>
+                <div
+                  class="alert alert-danger border-0 rounded-4 text-center mb-4 py-3 shadow-sm animate__animated animate__shakeX">
+                  <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                  <%= error %>
+                </div>
+                <% } %>
+
+                  <form method="POST" action="/flat/update/<%= flat._id %>">
+                    <!-- LOCATION -->
+                    <div class="section-divider">Unit Assignment</div>
+                    <div class="row g-3 mb-4">
+                      <div class="col-12">
+                        <label class="form-label">Select Block</label>
+                        <div class="icon-input">
+                          <i class="fa-regular fa-building"></i>
+                          <select name="blockName" id="blockSelect" class="form-select" required
+                            onchange="fillBlockConfig()">
+                            <% blocks.forEach(block=> { %>
+                              <option value="<%= block.blockName %>" data-bedroom="<%= block.numberOfBedroom %>"
+                                data-hall="<%= block.numberOfHall %>" data-kitchen="<%= block.numberOfKitchen %>"
+                                <%=(oldData?.blockName || flat.blockName)===block.blockName ? "selected" : "" %>>
+                                <%= block.blockName %>
+                              </option>
+                              <% }) %>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-12">
+                        <label class="form-label">Flat Number</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-hashtag"></i>
+                          <input type="text" inputmode="numeric" maxlength="5" oninput="validateNumber(this)"
+                            name="flatNo" class="form-control" value="<%= oldData?.flatNo || flat.flatNo %>" required
+                            placeholder="e.g. 101">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- CONFIGURATION -->
+                    <div class="section-divider">Configuration</div>
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">Bedrooms</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-bed"></i>
+                          <input type="text" name="numberOfBedroom" id="bedroom" class="form-control"
+                            value="<%= oldData?.numberOfBedroom || flat.numberOfBedroom %>">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Halls</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-couch"></i>
+                          <input type="text" name="numberOfHall" id="hall" class="form-control"
+                            value="<%= oldData?.numberOfHall || flat.numberOfHall %>">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Kitchens</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-utensils"></i>
+                          <input type="text" name="numberOfKitchen" id="kitchen" class="form-control"
+                            value="<%= oldData?.numberOfKitchen || flat.numberOfKitchen %>">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- SIZE -->
+                    <div class="section-divider">Dimensions</div>
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-6">
+                        <label class="form-label">Size Unit</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-ruler-horizontal"></i>
+                          <select name="sizeUnit" id="sizeUnit" class="form-select" required>
+                            <option value="">Select Unit</option>
+                            <option value="SQFT" <%=(oldData?.sizeUnit || flat.sizeUnit)==="SQFT" ? "selected" : "" %>
+                              >Square Feet</option>
+                            <option value="SQYD" <%=(oldData?.sizeUnit || flat.sizeUnit)==="SQYD" ? "selected" : "" %>
+                              >Square Yard</option>
+                            <option value="SQM" <%=(oldData?.sizeUnit || flat.sizeUnit)==="SQM" ? "selected" : "" %>
+                              >Square Meter</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Total Area</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-maximize"></i>
+                          <input type="number" name="flatSize" id="flatSize" class="form-control"
+                            value="<%= oldData?.flatSize || flat.flatSize %>" min="1"
+                            oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="Area value">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- EXTRA -->
+                    <div class="section-divider">Additional Notes</div>
+                    <div class="mb-5">
+                      <div class="icon-input">
+                        <i class="fa-solid fa-comment-dots" style="top: 1.2rem; transform: none;"></i>
+                        <textarea name="specialization" rows="3" class="form-control ps-5"
+                          placeholder="Special features, furniture details, etc..."><%= oldData?.specialization || flat.specialization %></textarea>
+                      </div>
+                    </div>
+
+                    <div class="d-grid pt-2">
+                      <button type="submit" class="btn-premium shadow-sm">
+                        <i class="fa-solid fa-check-double me-2"></i> Save Flat Improvements
+                      </button>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+    <script>
+      function fillBlockConfig() {
+        const select = document.getElementById("blockSelect");
+        const option = select.options[select.selectedIndex];
+        document.getElementById("bedroom").value = option.dataset.bedroom || "";
+        document.getElementById("hall").value = option.dataset.hall || "";
+        document.getElementById("kitchen").value = option.dataset.kitchen || "";
+      }
+
+      function validateNumber(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        if (input.value.length > 5) input.value = input.value.slice(0, 5);
+      }
+    </script>
+</body>
+
+</html>

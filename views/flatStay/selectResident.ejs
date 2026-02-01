@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Select Resident | Society Management</title>
+    <style>
+      body {
+        background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+        min-height: 100vh;
+      }
+
+      .premium-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 100%;
+        max-width: 900px;
+        margin: 2rem auto;
+        animation: fadeIn 0.8s ease;
+      }
+
+      .header-section {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        padding: 2rem;
+        color: white;
+        text-align: center;
+      }
+
+      .header-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .nav-pills .nav-link {
+        border-radius: 12px;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        color: #718096;
+        transition: 0.3s;
+        border: 1px solid transparent;
+      }
+
+      .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+      }
+
+      .nav-pills .nav-link:not(.active):hover {
+        background: #edf2f7;
+        color: #2d3748;
+      }
+
+      .select-btn {
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid #bbf7d0;
+        padding: 0.4rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .select-btn:hover {
+        background: #16a34a;
+        color: white;
+        transform: translateY(-1px);
+      }
+
+      .btn-tenant {
+        background: #fff7ed;
+        color: #f97316;
+        border-color: #ffedd5;
+      }
+
+      .btn-tenant:hover {
+        background: #f97316;
+        color: white;
+      }
+
+      .back-link {
+        color: #718096;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1rem;
+        font-weight: 500;
+        transition: 0.2s;
+      }
+
+      .back-link:hover {
+        color: #2d3748;
+        transform: translateX(-5px);
+      }
+    </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <div class="col-lg-10 p-4 min-vh-100 d-flex flex-column align-items-center">
+
+        <div style="width: 100%; max-width: 900px;">
+          <a href="/flatStayMaster/flatStayPage" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Stay Master
+          </a>
+
+          <div class="premium-card">
+            <div class="header-section">
+              <div class="header-icon">
+                <i class="fa-solid fa-hospital-user"></i>
+              </div>
+              <h3 class="fw-bold mb-1">Select Residing Member</h3>
+              <p class="mb-0 opacity-75 small text-uppercase fw-bold">
+                Unit Location:
+                <span id="locDisplay" class="text-white">Loading...</span>
+              </p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+
+              <div class="d-flex justify-content-center mb-4">
+                <ul class="nav nav-pills gap-2 p-1 bg-light rounded-4 border">
+                  <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#membersTab">
+                      <i class="fa-solid fa-id-card-clip me-2"></i>Society Members
+                    </button>
+                  </li>
+                  <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tenantsTab">
+                      <i class="fa-solid fa-users-viewfinder me-2"></i>Visiting Tenants
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="tab-content animate__animated animate__fadeIn">
+                <!-- Members List -->
+                <div class="tab-pane fade show active" id="membersTab">
+                  <div class="table-responsive">
+                    <table class="table fancy-table align-middle">
+                      <thead>
+                        <tr>
+                          <th>Identification</th>
+                          <th>Contact Info</th>
+                          <th class="text-center">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (members.length> 0) { %>
+                          <% members.forEach(m=> { %>
+                            <tr>
+                              <td>
+                                <div class="fw-bold text-dark">
+                                  <%= m.firstName %>
+                                    <%= m.lastName %>
+                                </div>
+                                <div class="small text-muted font-monospace">
+                                  <%= m.idProof %> Verified
+                                </div>
+                              </td>
+                              <td>
+                                <div class="small fw-medium">
+                                  <%= m.firstMobileNo %>
+                                </div>
+                                <div class="small text-muted">
+                                  <%= m.email || 'No Email' %>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <form method="POST" action="/flatStayMaster/selectResident">
+                                  <input type="hidden" name="flat" value="<%= flat._id %>">
+                                  <input type="hidden" name="member" value="<%= m._id %>">
+                                  <input type="hidden" name="residentType" value="member">
+                                  <button class="select-btn border-0">Pick Member</button>
+                                </form>
+                              </td>
+                            </tr>
+                            <% }) %>
+                              <% } else { %>
+                                <tr>
+                                  <td colspan="3" class="text-center py-4 text-muted">No members registered yet</td>
+                                </tr>
+                                <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Tenants List -->
+                <div class="tab-pane fade" id="tenantsTab">
+                  <div class="table-responsive">
+                    <table class="table fancy-table align-middle">
+                      <thead>
+                        <tr>
+                          <th>Tenant Name</th>
+                          <th>Contact Info</th>
+                          <th class="text-center">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (tenants.length> 0) { %>
+                          <% tenants.forEach(t=> { %>
+                            <tr>
+                              <td>
+                                <div class="fw-bold text-dark">
+                                  <%= t.firstName %>
+                                    <%= t.lastName %>
+                                </div>
+                                <div class="small text-muted font-monospace">
+                                  <%= t.state %> Registry
+                                </div>
+                              </td>
+                              <td>
+                                <div class="small fw-medium">
+                                  <%= t.firstMobileNo %>
+                                </div>
+                                <div class="small text-muted">
+                                  <%= t.email || 'No Email' %>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <form method="POST" action="/flatStayMaster/selectResident">
+                                  <input type="hidden" name="flat" value="<%= flat._id %>">
+                                  <input type="hidden" name="tenant" value="<%= t._id %>">
+                                  <input type="hidden" name="residentType" value="tenant">
+                                  <button class="select-btn btn-tenant border-0">Assign Tenant</button>
+                                </form>
+                              </td>
+                            </tr>
+                            <% }) %>
+                              <% } else { %>
+                                <tr>
+                                  <td colspan="3" class="text-center py-4 text-muted">No active tenants found</td>
+                                </tr>
+                                <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const bName = params.get("blockName") || "Unknown";
+      const fNo = params.get("flatNo") || "Unknown";
+      document.getElementById("locDisplay").innerText = `Block ${bName} | Unit #${fNo}`;
+    </script>
+</body>
+
+</html>

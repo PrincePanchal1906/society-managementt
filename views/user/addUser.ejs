@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("./partials/head") %>
+    <title>Add New User | Society Management</title>
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --text-main: #2c3e50;
+        --text-muted: #7f8c8d;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+
+      .premium-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        overflow: hidden;
+      }
+
+      .header-section {
+        background: var(--primary-gradient);
+        padding: 2.5rem 1rem;
+        text-align: center;
+        color: white;
+      }
+
+      .header-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .input-group-text {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        color: var(--text-muted);
+        padding: 0 1.2rem;
+      }
+
+      .form-control,
+      .form-select {
+        padding: 0.75rem 1.2rem;
+        border-radius: 0 12px 12px 0;
+        border: 1.5px solid #e2e8f0;
+        background-color: #f8fafc;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background-color: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .btn-premium {
+        background: var(--primary-gradient);
+        border: none;
+        color: white !important;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 12px -2px rgba(118, 75, 162, 0.25);
+      }
+
+      .btn-premium:hover {
+        transform: translateY(-2px);
+        background: var(--primary-gradient);
+        box-shadow: 0 15px 20px -4px rgba(118, 75, 162, 0.35);
+      }
+
+      .error-hint {
+        font-size: 0.75rem;
+        color: #e74c3c;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+
+      .back-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        transition: 0.2s;
+        background: white;
+        padding: 8px 16px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .back-link:hover {
+        color: var(--text-main);
+        transform: translateX(-5px);
+        background: #f8fafc;
+      }
+    </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2">
+        <%- include("./partials/leftSidebar") %>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-10 min-vh-100 d-flex flex-column align-items-center justify-content-center py-5">
+
+        <div style="width: 100%; max-width: 800px;">
+          <a href="/userManagement" class="back-link animate__animated animate__fadeInLeft">
+            <i class="fa-solid fa-arrow-left"></i> Back to User Registry
+          </a>
+
+          <div class="premium-card animate__animated animate__fadeInUp">
+            <div class="header-section">
+              <div class="header-icon">
+                <i class="fa-solid fa-user-plus"></i>
+              </div>
+              <h3 class="fw-bold mb-1">Create Account</h3>
+              <p class="mb-0 opacity-75 small text-uppercase fw-bold">Register New Society Staff / Resident</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+              <% if (locals.error) { %>
+                <div
+                  class="alert alert-danger border-0 rounded-4 text-center mb-4 py-3 shadow-sm animate__animated animate__shakeX">
+                  <i class="fa-solid fa-circle-exclamation me-2"></i>
+                  <%= error %>
+                </div>
+                <% } %>
+
+                  <form action="/add" method="POST" enctype="multipart/form-data" id="addUserForm" novalidate>
+                    <div class="row g-4">
+                      <!-- Full Name -->
+                      <div class="col-md-6">
+                        <label class="form-label">Full Name</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-signature"></i></span>
+                          <input type="text" name="name" class="form-control" placeholder="John Doe"
+                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
+                            value="<%= locals.oldData?.name || '' %>" required>
+                        </div>
+                      </div>
+
+                      <!-- Role -->
+                      <div class="col-md-6">
+                        <label class="form-label">Access Level / Role</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-user-shield"></i></span>
+                          <select name="role" class="form-select">
+                            <option value="MEMBER">Resident Member</option>
+                            <option value="ADMIN">System Admin</option>
+                            <option value="MANAGER">Facility Manager</option>
+                            <option value="SECRETARY">Management Secretary</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="col-md-6">
+                        <label class="form-label">Communication Email</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                          <input type="email" name="email" class="form-control" placeholder="john@example.com"
+                            value="<%= locals.oldData?.email || '' %>" required>
+                        </div>
+                      </div>
+
+                      <!-- Phone -->
+                      <div class="col-md-6">
+                        <label class="form-label">Mobile Number</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                          <input type="text" name="phone" id="phone" maxlength="10" class="form-control"
+                            placeholder="10-digit mobile"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
+                            value="<%= locals.oldData?.phone || '' %>" required>
+                        </div>
+                      </div>
+
+                      <!-- Password -->
+                      <div class="col-md-6">
+                        <label class="form-label">Secure Password</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                          <input type="password" name="password" class="form-control" placeholder="••••••••"
+                            minlength="8" required>
+                        </div>
+                        <div class="error-hint">Min 8 chars with upper, lower, number & special char.</div>
+                      </div>
+
+                      <!-- Profile Image -->
+                      <div class="col-md-6">
+                        <label class="form-label">Profile Avatar (Optional)</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-camera"></i></span>
+                          <input type="file" name="profileImage" class="form-control"
+                            accept="image/png, image/jpeg, image/jpg">
+                        </div>
+                      </div>
+
+                      <div class="col-12 mt-5">
+                        <button type="submit" class="btn-premium w-100">
+                          <i class="fa-solid fa-user-check me-2"></i> Finalize User Account
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <%- include("./partials/script") %>
+</body>
+
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+        <title>Update Flat Stay | Society Management</title>
+        <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --glass-bg: rgba(255, 255, 255, 0.95);
+                --text-main: #2c3e50;
+                --text-muted: #7f8c8d;
+            }
+
+            body {
+                font-family: 'Outfit', sans-serif;
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                min-height: 100vh;
+                color: var(--text-main);
+            }
+
+            .premium-card {
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 650px;
+                overflow: hidden;
+            }
+
+            .header-section {
+                background: var(--primary-gradient);
+                padding: 2.5rem 1rem;
+                text-align: center;
+                color: white;
+            }
+
+            .header-icon {
+                font-size: 2.5rem;
+                margin-bottom: 0.5rem;
+                background: rgba(255, 255, 255, 0.2);
+                width: 70px;
+                height: 70px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .form-label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: var(--text-main);
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .icon-input {
+                position: relative;
+            }
+
+            .icon-input i {
+                position: absolute;
+                left: 1.1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+                font-size: 0.95rem;
+                transition: color 0.3s;
+                z-index: 5;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 0.75rem 1rem 0.75rem 2.8rem;
+                border-radius: 12px;
+                border: 1.5px solid #e2e8f0;
+                background-color: #f8fafc;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+            }
+
+            .form-control:focus,
+            .form-select:focus {
+                background-color: white;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                outline: none;
+            }
+
+            .form-control:focus+i,
+            .form-select:focus+i {
+                color: #667eea;
+            }
+
+            .form-control[readonly] {
+                background-color: #e9ecef;
+                cursor: not-allowed;
+                border-color: #dee2e6;
+            }
+
+            .btn-premium {
+                background: var(--primary-gradient);
+                border: none;
+                color: white !important;
+                padding: 1rem 2rem;
+                border-radius: 12px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+                box-shadow: 0 8px 12px -2px rgba(118, 75, 162, 0.25);
+            }
+
+            .btn-premium:hover {
+                transform: translateY(-2px);
+                background: var(--primary-gradient);
+                box-shadow: 0 15px 20px -4px rgba(118, 75, 162, 0.35);
+            }
+
+            .back-link {
+                color: var(--text-muted);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 1.5rem;
+                font-weight: 500;
+                transition: 0.2s;
+                background: white;
+                padding: 8px 16px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .back-link:hover {
+                color: var(--text-main);
+                transform: translateX(-5px);
+                background: #f8fafc;
+            }
+
+            .section-divider {
+                border-bottom: 2px solid #edf2f7;
+                margin-bottom: 1.2rem;
+                padding-bottom: 0.4rem;
+                color: #667eea;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 0.75rem;
+                margin-top: 1.5rem;
+            }
+
+            .current-doc {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                background: #f0f7ff;
+                border-radius: 8px;
+                color: #007bff;
+                font-size: 0.85rem;
+                text-decoration: none;
+                margin-top: 8px;
+                transition: 0.2s;
+            }
+
+            .current-doc:hover {
+                background: #e1efff;
+                color: #0056b3;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-0">
+            <div class="col-lg-2">
+                <%- include("../partials/leftSidebar") %>
+            </div>
+
+            <div class="col-lg-10 min-vh-100 d-flex flex-column align-items-center justify-content-center py-5">
+                <div style="width: 100%; max-width: 650px;">
+                    <a href="/flatStayMaster/flatStay" class="back-link animate__animated animate__fadeInLeft">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Stays
+                    </a>
+
+                    <div class="premium-card animate__animated animate__fadeInUp">
+                        <div class="header-section">
+                            <div class="header-icon">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                            <h3 class="fw-bold mb-1">Update Stay Details</h3>
+                            <p class="mb-0 opacity-75 small text-uppercase">Modify Residency Period</p>
+                        </div>
+
+                        <div class="card-body p-4 p-md-5">
+                            <form action="/flatStayMaster/saveUpdateStay/<%= stay._id %>" method="POST"
+                                enctype="multipart/form-data">
+
+                                <!-- RESIDENT INFO (READONLY) -->
+                                <div class="section-divider">Resident Information</div>
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Block & Flat</label>
+                                        <div class="icon-input">
+                                            <i class="fa-regular fa-building"></i>
+                                            <input type="text" class="form-control"
+                                                value="<%= stay.flat.blockName %> - <%= stay.flat.flatNo %>" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Resident Type</label>
+                                        <div class="icon-input">
+                                            <i class="fa-solid fa-user-tag"></i>
+                                            <input type="text" class="form-control"
+                                                value="<%= stay.residentType.charAt(0).toUpperCase() + stay.residentType.slice(1) %>"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Resident Name</label>
+                                        <div class="icon-input">
+                                            <i class="fa-solid fa-user"></i>
+                                            <input type="text" class="form-control"
+                                                value="<%= stay.residentType === 'member' ? (stay.member?.firstName + ' ' + (stay.member?.lastName || '')) : (stay.tenant?.firstName + ' ' + (stay.tenant?.lastName || '')) %>"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- STAY PERIOD -->
+                                <div class="section-divider">Residency Period</div>
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Stay From</label>
+                                        <div class="icon-input">
+                                            <i class="fa-regular fa-calendar"></i>
+                                            <input type="date" name="stayFrom" class="form-control"
+                                                value="<%= stay.stayFrom ? stay.stayFrom.toISOString().split('T')[0] : '' %>"
+                                                required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Stay To (Move-out)</label>
+                                        <div class="icon-input">
+                                            <i class="fa-regular fa-calendar-check"></i>
+                                            <input type="date" name="stayTo" class="form-control"
+                                                value="<%= stay.stayTo ? stay.stayTo.toISOString().split('T')[0] : '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DOCUMENTS (TENANT ONLY) -->
+                                <% if (stay.residentType==="tenant" ) { %>
+                                    <div class="section-divider">Tenant Documents</div>
+                                    <div class="row g-4 mb-5">
+                                        <div class="col-12">
+                                            <label class="form-label">Document Type</label>
+                                            <div class="icon-input">
+                                                <i class="fa-solid fa-file-contract"></i>
+                                                <select name="documentType" class="form-select">
+                                                    <option value="POLICE_VERIFICATION"
+                                                        <%=stay?.documentType==='POLICE_VERIFICATION' ? 'selected' : ''
+                                                        %>>Police Verification</option>
+                                                    <option value="RENT_AGREEMENT"
+                                                        <%=stay?.documentType==='RENT_AGREEMENT' ? 'selected' : '' %>
+                                                        >Rent Agreement</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label">Update Document</label>
+                                            <div class="icon-input">
+                                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                                <input type="file" name="documentFile" class="form-control"
+                                                    accept=".pdf,.jpg,.png">
+                                            </div>
+                                            <% if (stay.filePath) { %>
+                                                <a href="/flatStayMaster/document/<%= stay._id %>" target="_blank"
+                                                    class="current-doc">
+                                                    <i class="fa-solid fa-file-pdf"></i> View Current Document
+                                                </a>
+                                                <% } %>
+                                                    <p class="text-muted small mt-2 mb-0">PDF, JPG, PNG accepted. Leave
+                                                        empty to keep existing.</p>
+                                        </div>
+                                    </div>
+                                    <% } %>
+
+                                        <div class="d-grid mt-2">
+                                            <button type="submit" class="btn-premium shadow-sm">
+                                                <i class="fa-solid fa-check-circle me-2"></i> Save Changes
+                                            </button>
+                                        </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../partials/script") %>
+</body>
+
+</html>

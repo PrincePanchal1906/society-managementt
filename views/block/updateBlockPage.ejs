@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+        <title>Update Block - <%= block.blockName %> | Society Management</title>
+        <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --glass-bg: rgba(255, 255, 255, 0.95);
+                --text-main: #2c3e50;
+                --text-muted: #7f8c8d;
+            }
+
+            body {
+                font-family: 'Outfit', sans-serif;
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                min-height: 100vh;
+                color: var(--text-main);
+            }
+
+            .premium-card {
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 550px;
+                overflow: hidden;
+            }
+
+            .header-section {
+                background: var(--primary-gradient);
+                padding: 2.5rem 1rem;
+                text-align: center;
+                color: white;
+            }
+
+            .header-icon {
+                font-size: 2.5rem;
+                margin-bottom: 0.5rem;
+                background: rgba(255, 255, 255, 0.2);
+                width: 70px;
+                height: 70px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .form-label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: var(--text-main);
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .icon-input {
+                position: relative;
+            }
+
+            .icon-input i {
+                position: absolute;
+                left: 1.1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+                font-size: 0.95rem;
+                transition: color 0.3s;
+                z-index: 5;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 0.75rem 1rem 0.75rem 2.8rem;
+                border-radius: 12px;
+                border: 1.5px solid #e2e8f0;
+                background-color: #f8fafc;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+            }
+
+            .form-control:focus,
+            .form-select:focus {
+                background-color: white;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                outline: none;
+            }
+
+            .form-control:focus+i,
+            .form-select:focus+i {
+                color: #667eea;
+            }
+
+            .error-text {
+                color: #e74c3c;
+                font-size: 0.72rem;
+                font-weight: 500;
+                margin-top: 2px;
+                min-height: 16px;
+            }
+
+            .btn-premium {
+                background: var(--primary-gradient);
+                border: none;
+                color: white !important;
+                padding: 1rem 2rem;
+                border-radius: 12px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+                box-shadow: 0 8px 12px -2px rgba(118, 75, 162, 0.25);
+            }
+
+            .btn-premium:hover {
+                transform: translateY(-2px);
+                background: var(--primary-gradient);
+                box-shadow: 0 15px 20px -4px rgba(118, 75, 162, 0.35);
+            }
+
+            .back-link {
+                color: var(--text-muted);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 1.5rem;
+                font-weight: 500;
+                transition: 0.2s;
+                background: white;
+                padding: 8px 16px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .back-link:hover {
+                color: var(--text-main);
+                transform: translateX(-5px);
+                background: #f8fafc;
+            }
+
+            .section-divider {
+                border-bottom: 2px solid #edf2f7;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
+                color: #667eea;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 0.8rem;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-0">
+            <div class="col-lg-2">
+                <%- include("../partials/leftSidebar") %>
+            </div>
+
+            <div class="col-lg-10 min-vh-100 d-flex flex-column align-items-center justify-content-center py-5">
+                <div style="width: 100%; max-width: 550px;">
+                    <a href="/block/blockManagement" class="back-link animate__animated animate__fadeInLeft">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Blocks
+                    </a>
+
+                    <div class="premium-card animate__animated animate__fadeInUp">
+                        <div class="header-section">
+                            <div class="header-icon">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </div>
+                            <h3 class="fw-bold mb-1">Update Block</h3>
+                            <p class="mb-0 opacity-75 small text-uppercase">Modifying <span class="fw-bold">
+                                    <%= block.blockName %>
+                                </span></p>
+                        </div>
+
+                        <div class="card-body p-4 p-md-5">
+                            <% if (locals.error) { %>
+                                <div
+                                    class="alert alert-danger border-0 rounded-4 text-center mb-4 py-3 shadow-sm animate__animated animate__shakeX">
+                                    <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                                    <%= error %>
+                                </div>
+                                <% } %>
+
+                                    <form action="/block/update/<%= block._id %>" method="POST" novalidate
+                                        onsubmit="return validateForm()">
+
+                                        <!-- GENERAL INFO -->
+                                        <div class="section-divider">General Information</div>
+                                        <div class="row g-4 mb-4">
+                                            <div class="col-12">
+                                                <label class="form-label">Block Name</label>
+                                                <div class="icon-input">
+                                                    <i class="fa-regular fa-building"></i>
+                                                    <input type="text" name="blockName" id="blockName"
+                                                        class="form-control" placeholder="e.g. Block A"
+                                                        value="<%= locals.oldData?.blockName || block.blockName %>"
+                                                        required>
+                                                </div>
+                                                <div id="nameError" class="error-text"></div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label">Total Flats</label>
+                                                <div class="icon-input">
+                                                    <i class="fa-solid fa-layer-group"></i>
+                                                    <input type="text" inputmode="numeric" name="numberOfFlats"
+                                                        id="numberOfFlats" maxlength="5" oninput="validateNumber(this)"
+                                                        class="form-control"
+                                                        value="<%= locals.oldData?.numberOfFlats || block.numberOfFlats %>">
+                                                </div>
+                                                <div id="numberError" class="error-text"></div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label">Flat Size Unit</label>
+                                                <div class="icon-input">
+                                                    <i class="fa-solid fa-ruler"></i>
+                                                    <select name="sizeUnit" class="form-select" required>
+                                                        <% const currentUnit=locals.oldData?.sizeUnit || block.sizeUnit
+                                                            %>
+                                                            <option value="">Select Unit</option>
+                                                            <option value="SQFT" <%=currentUnit==="SQFT" ? "selected"
+                                                                : "" %>>Square Feet</option>
+                                                            <option value="SQYD" <%=currentUnit==="SQYD" ? "selected"
+                                                                : "" %>>Square Yard</option>
+                                                            <option value="SQM" <%=currentUnit==="SQM" ? "selected" : ""
+                                                                %>>Square Meter</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label class="form-label">Standard Flat Size</label>
+                                                <div class="icon-input">
+                                                    <i class="fa-solid fa-ruler-combined"></i>
+                                                    <input type="number" name="sizeOfFlats" class="form-control"
+                                                        placeholder="Enter size" min="1"
+                                                        oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                                        value="<%= locals.oldData?.sizeOfFlats || block.sizeOfFlats %>">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- CONFIGURATION -->
+                                        <div class="section-divider">Standard Configuration</div>
+                                        <div class="row g-4 mb-5">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Bedrooms</label>
+                                                <div class="icon-input">
+                                                    <i class="fa-solid fa-bed"></i>
+                                                    <input type="text" name="numberOfBedroom" class="form-control"
+                                                        placeholder="Ex: 2" maxlength="1" inputmode="numeric"
+                                                        oninput="singleDigitOnly(this)"
+                                                        value="<%= locals.oldData?.numberOfBedroom || block.numberOfBedroom %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Halls</label>
+                                                <div class="icon-input">
+                                                    <i class="fa-solid fa-couch"></i>
+                                                    <input type="text" name="numberOfHall" class="form-control"
+                                                        placeholder="Ex: 1" maxlength="1" inputmode="numeric"
+                                                        oninput="singleDigitOnly(this)"
+                                                        value="<%= locals.oldData?.numberOfHall || block.numberOfHall %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Kitchens</label>
+                                                <div class="icon-input">
+                                                    <i class="fa-solid fa-utensils"></i>
+                                                    <input type="text" name="numberOfKitchen" class="form-control"
+                                                        placeholder="Ex: 1" maxlength="1" inputmode="numeric"
+                                                        oninput="singleDigitOnly(this)"
+                                                        value="<%= locals.oldData?.numberOfKitchen || block.numberOfKitchen %>">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-grid pt-2">
+                                            <button type="submit" class="btn-premium shadow-sm">
+                                                <i class="fa-solid fa-cloud-arrow-up me-2"></i> Update Block Details
+                                            </button>
+                                        </div>
+                                    </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../partials/script") %>
+        <script>
+            function validateNumber(input) {
+                input.value = input.value.replace(/[^0-9]/g, '');
+                const err = document.getElementById("numberError");
+                if (input.value.length > 5) {
+                    input.value = input.value.slice(0, 5);
+                    err.innerText = "Max 5 digits allowed";
+                } else {
+                    err.innerText = "";
+                }
+            }
+
+            function singleDigitOnly(input) {
+                input.value = input.value.replace(/[^1-9]/g, '');
+                if (input.value.length > 1) {
+                    input.value = input.value.slice(0, 1);
+                }
+            }
+
+            function validateForm() {
+                const name = document.getElementById("blockName").value;
+                const numFlats = document.getElementById("numberOfFlats").value;
+                let isValid = true;
+
+                if (!name.trim()) {
+                    document.getElementById("nameError").innerText = "Block name is required";
+                    isValid = false;
+                } else {
+                    document.getElementById("nameError").innerText = "";
+                }
+
+                if (!numFlats || numFlats < 1) {
+                    document.getElementById("numberError").innerText = "Must have at least 1 flat";
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+        </script>
+</body>
+
+</html>

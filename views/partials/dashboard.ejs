@@ -1,0 +1,301 @@
+<style>
+  .dashboard-hero {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    padding: 3rem;
+    border-radius: 24px;
+    color: rgb(235, 61, 61);
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(46, 204, 113, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dashboard-hero::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(50px);
+  }
+
+  .spec-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .spec-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    border-color: var(--accent-color);
+  }
+
+  .pending-item {
+    padding: 1rem;
+    background: #fffafa;
+    border: 1px dashed #ff758c;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+  }
+
+  .pending-item:hover {
+    transform: scale(1.02);
+    background: #fff5f5;
+  }
+
+  .data-badge {
+    padding: 0.35rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .badge-pending {
+    background: #fff1f2;
+    color: #e11d48;
+  }
+
+  .badge-info {
+    background: #f0f9ff;
+    color: #0369a1;
+  }
+
+  .badge-success {
+    background: #f0fdf4;
+    color: #15803d;
+  }
+
+  .spec-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .spec-list-item:last-child {
+    border-bottom: none;
+  }
+
+  .avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: #f0fff4;
+    color: var(--accent-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+</style>
+
+<div class="dashboard-hero animate__animated animate__fadeIn">
+  <div class="row align-items-center">
+    <div class="col-md-9">
+      <h1 class="fw-bold mb-2">Society Command Center</h1>
+      <p class="lead mb-0 opacity-75">Overview of active operations and community specifications.</p>
+    </div>
+    <div class="col-md-3 text-md-end d-none d-md-block">
+      <div
+        class="bg-white bg-opacity-20 p-3 rounded-4 d-inline-block backdrop-blur-md border border-white border-opacity-20">
+        <div class="small opacity-75">Active Sessions</div>
+        <div class="fw-bold fs-4">
+          <%= (users && Array.isArray(users)) ? users.length : 0 %> Registered
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Pending Things Section -->
+  <div class="col-lg-7">
+    <div class="premium-card p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h5 class="fw-bold mb-1"><i class="fa-solid fa-clock-rotate-left text-danger me-2"></i>Critical Pending Items
+          </h5>
+          <p class="text-muted small mb-0">Operational tasks requiring immediate attention</p>
+        </div>
+        <a href="/visitor/pendingVisitors" class="btn btn-sm btn-premium">View All</a>
+      </div>
+
+      <div class="pending-list mt-3">
+        <!-- Visitor Pending -->
+        <div class="pending-item animate__animated animate__fadeInLeft" style="animation-delay: 0.1s;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar-circle" style="background: #fff1f2; color: #e11d48;">
+              <i class="fa-solid fa-user-clock"></i>
+            </div>
+            <div>
+              <div class="fw-bold small">Active Visitors</div>
+              <div class="text-muted" style="font-size: 0.75rem;">Visitors currently inside society premises</div>
+            </div>
+          </div>
+          <span class="data-badge badge-pending">Active Visitors</span>
+        </div>
+
+        <!-- Role Approvals Placeholder -->
+        <div class="pending-item animate__animated animate__fadeInLeft" style="animation-delay: 0.2s;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar-circle" style="background: #f0f9ff; color: #0369a1;">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+              <div class="fw-bold small">Role Verification</div>
+              <div class="text-muted" style="font-size: 0.75rem;">New user registrations pending role assignment</div>
+            </div>
+          </div>
+          <span class="data-badge badge-info">Admin Review</span>
+        </div>
+
+        <!-- Maintenance Alerts Placeholder -->
+        <div class="pending-item animate__animated animate__fadeInLeft" style="animation-delay: 0.3s;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar-circle" style="background: #fff7ed; color: #c2410c;">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+            </div>
+            <div>
+              <div class="fw-bold small">Maintenance Requests</div>
+              <div class="text-muted" style="font-size: 0.75rem;">Unresolved issues from flat residents</div>
+            </div>
+          </div>
+          <span class="data-badge" style="background: #fff7ed; color: #c2410c;">3 Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Specifications -->
+  <div class="col-lg-5">
+    <div class="premium-card p-4">
+      <h5 class="fw-bold mb-4"><i class="fa-solid fa-file-invoice text-primary me-2"></i>Society Specifications</h5>
+
+      <div class="spec-list">
+        <div class="spec-list-item">
+          <span class="text-muted small">Total Infrastructure</span>
+          <span class="fw-bold">
+            <%= (blocks && Array.isArray(blocks)) ? blocks.length : 0 %> Blocks
+          </span>
+        </div>
+
+        <div class="spec-list-item">
+          <span class="text-muted small">Management Personnel</span>
+          <span class="fw-bold">
+            <%= (users && Array.isArray(users)) ? users.filter(u=> u && u.role !== 'MEMBER').length : 0 %> Staff
+          </span>
+        </div>
+
+        <div class="spec-list-item">
+          <span class="text-muted small">Resident Members</span>
+          <span class="fw-bold">
+            <%= (users && Array.isArray(users)) ? users.filter(u=> u && u.role === 'MEMBER').length : 0 %> Active
+          </span>
+        </div>
+
+        <div class="spec-list-item">
+          <span class="text-muted small">Admin Control</span>
+          <span class="fw-bold text-success">Fully Encrypted</span>
+        </div>
+
+        <div class="spec-list-item">
+          <span class="text-muted small">System Uptime</span>
+          <span class="badge-premium py-1 px-2" style="font-size: 0.7rem;">99.9% Online</span>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-top">
+        <div class="d-flex align-items-center gap-3 p-3 rounded-3"
+          style="background: #f8fafc; border: 1px solid #e2e8f0;">
+          <i class="fa-solid fa-shield-halved text-success fs-4"></i>
+          <div>
+            <div class="fw-bold small">Security Protocol</div>
+            <div class="text-muted" style="font-size: 0.7rem;">Verified by Global Standards</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Resident Breakdown -->
+  <div class="col-md-6">
+    <div class="spec-card">
+      <h6 class="fw-bold text-uppercase small text-muted mb-3">Community Distribution</h6>
+      <div class="d-flex align-items-end gap-2 mb-2">
+        <h2 class="fw-bold mb-0 text-primary">
+          <%= (users && Array.isArray(users)) ? users.length : 0 %>
+        </h2>
+        <span class="text-muted small pb-1">Total Users Registered</span>
+      </div>
+      <div class="progress" style="height: 10px; border-radius: 5px; background: #f1f5f9;">
+        <% const safeUsersList=(users && Array.isArray(users)) ? users : []; const totalUCount=safeUsersList.length;
+          const aUCount=safeUsersList.filter(u=> u && u.role === 'ADMIN').length;
+          const mUCount = safeUsersList.filter(u => u && (u.role === 'MANAGER' || u.role === 'SECRETARY' || u.role ===
+          'SECURITY')).length;
+          const memUCount = safeUsersList.filter(u => u && u.role === 'MEMBER').length;
+
+          const aP = totalUCount > 0 ? (aUCount / totalUCount * 100).toFixed(1) + '%' : '0%';
+          const mP = totalUCount > 0 ? (mUCount / totalUCount * 100).toFixed(1) + '%' : '0%';
+          const memP = totalUCount > 0 ? (memUCount / totalUCount * 100).toFixed(1) + '%' : '0%';
+          %>
+          <div class="progress-bar bg-primary" role="progressbar" style="width: <%= aP %>"></div>
+          <div class="progress-bar bg-info" role="progressbar" style="width: <%= mP %>"></div>
+          <div class="progress-bar bg-success" role="progressbar" style="width: <%= memP %>"></div>
+      </div>
+      <div class="d-flex flex-wrap gap-3 mt-3">
+        <div class="small"><i class="fa-solid fa-circle text-primary me-1" style="font-size: 0.6rem;"></i> Administrator
+        </div>
+        <div class="small"><i class="fa-solid fa-circle text-info me-1" style="font-size: 0.6rem;"></i> Management</div>
+        <div class="small"><i class="fa-solid fa-circle text-success me-1" style="font-size: 0.6rem;"></i> Residents
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Personnel Feed -->
+  <div class="col-md-6">
+    <div class="premium-card p-4">
+      <h6 class="fw-bold text-uppercase small text-muted mb-3">Recent System Access</h6>
+      <% if (users && users.length> 0) { %>
+        <div class="d-flex flex-column gap-2">
+          <% users.slice(-3).reverse().forEach(u=> { %>
+            <div class="d-flex align-items-center justify-content-between p-2 rounded-3 hover-bg-light"
+              style="transition: 0.2s;">
+              <div class="d-flex align-items-center gap-3">
+                <div class="avatar-circle">
+                  <%= (u.fullname || u.name || 'U' ).charAt(0).toUpperCase() %>
+                </div>
+                <div>
+                  <div class="fw-bold small" style="font-size: 0.85rem;">
+                    <%= u.fullname || u.name %>
+                  </div>
+                  <div class="text-muted" style="font-size: 0.7rem;">
+                    <%= u.role %>
+                  </div>
+                </div>
+              </div>
+              <span class="text-muted" style="font-size: 0.65rem;">
+                <%= (u.createdAt && !isNaN(new Date(u.createdAt))) ? new Date(u.createdAt).toLocaleDateString()
+                  : 'Active' %>
+              </span>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+    </div>
+  </div>
+</div>

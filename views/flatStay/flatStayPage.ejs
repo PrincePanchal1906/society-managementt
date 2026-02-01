@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Flat Stay Master | Society Management</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <!-- Content Area -->
+      <div class="col-lg-10 p-4 min-vh-100">
+        <div class="premium-card p-2 animate__animated animate__fadeIn">
+          <!-- Header Section -->
+          <div class="header-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div>
+              <h3 class="fw-bold mb-0 text-white"><i class="fa-solid fa-house-user me-2"></i>Flat Stay Master</h3>
+              <p class="mb-0 small opacity-75 text-uppercase fw-bold text-white">Manage resident durations and occupancy
+              </p>
+            </div>
+          </div>
+
+          <div class="px-3 pb-3">
+            <!-- Search Container -->
+            <div class="search-container mt-4">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="staySearch" class="search-input"
+                placeholder="Search by flat, resident name, or mobile..." onkeyup="filterStays()">
+            </div>
+
+            <!-- Error Message Display -->
+            <% if (locals.error) { %>
+              <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4"
+                role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                <strong>Error:</strong>
+                <%= error %>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              <% } %>
+
+                <% const activeStaysCount=stays.filter(s=> s.isActive).length;
+                  %>
+
+                  <!-- Dashboard Stats Summary (Optional) -->
+                  <div class="row g-3 mt-2 mb-4">
+                    <div class="col-md-4">
+                      <div class="stat-card border-0 shadow-sm p-3 rounded-4 d-flex align-items-center bg-white">
+                        <div class="badge bg-primary-subtle text-primary p-3 rounded-4 me-3 fs-4">
+                          <i class="fa-solid fa-door-open"></i>
+                        </div>
+                        <div>
+                          <h4 class="fw-bold mb-0">
+                            <%= flats.length %>
+                          </h4>
+                          <p class="text-muted small mb-0">Total Flats</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="stat-card border-0 shadow-sm p-3 rounded-4 d-flex align-items-center bg-white">
+                        <div class="badge bg-success-subtle text-success p-3 rounded-4 me-3 fs-4">
+                          <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div>
+                          <h4 class="fw-bold mb-0">
+                            <%= activeStaysCount %>
+                          </h4>
+                          <p class="text-muted small mb-0">Active Stays</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="stat-card border-0 shadow-sm p-3 rounded-4 d-flex align-items-center bg-white">
+                        <div class="badge bg-warning-subtle text-warning p-3 rounded-4 me-3 fs-4">
+                          <i class="fa-solid fa-key"></i>
+                        </div>
+                        <div>
+                          <h4 class="fw-bold mb-0">
+                            <%= flats.length - activeStaysCount %>
+                          </h4>
+                          <p class="text-muted small mb-0">Vacant Units</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <% function getActiveStay(flatId) { return stays.find(s=>
+                    s.isActive === true &&
+                    s.flat &&
+                    (s.flat._id || s.flat).toString() === flatId.toString()
+                    );
+                    }
+                    %>
+
+                    <!-- Table Area -->
+                    <div class="table-responsive">
+                      <table class="table fancy-table" id="stayTable">
+                        <thead>
+                          <tr>
+                            <th>Unit Address</th>
+                            <th>Status</th>
+                            <th>Resident Details</th>
+                            <th>Duration</th>
+                            <th class="text-center">Operations</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (flats.length> 0) { %>
+                            <% flats.forEach((f, index)=> {
+                              const stay = getActiveStay(f._id);
+                              %>
+                              <% const delay=index * 0.05; %>
+                                <tr class="animate__animated animate__fadeInUp" data-delay="<%= delay %>s">
+                                  <td>
+                                    <div class="d-flex align-items-center">
+                                      <div class="badge bg-light text-dark border p-2 rounded-3 me-2">
+                                        <i class="fa-solid fa-building-user"></i>
+                                      </div>
+                                      <div>
+                                        <div class="fw-bold text-dark">Block <%= f.blockName %>
+                                        </div>
+                                        <div class="small text-muted fw-bold">Unit #<%= f.flatNo %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <% if (!stay) { %>
+                                      <span
+                                        class="badge bg-light text-danger border px-3 py-2 rounded-pill small fw-bold">
+                                        <i class="fa-solid fa-circle-dot me-1 small"></i> Vacant
+                                      </span>
+                                      <% } else if (stay.residentType==="member" ) { %>
+                                        <span
+                                          class="badge bg-info-subtle text-primary border border-info-subtle px-3 py-2 rounded-pill small fw-bold">
+                                          <i class="fa-solid fa-user-tie me-1 small"></i> Member
+                                        </span>
+                                        <% } else { %>
+                                          <span
+                                            class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 rounded-pill small fw-bold">
+                                            <i class="fa-solid fa-user-tag me-1 small"></i> Tenant
+                                          </span>
+                                          <% } %>
+                                  </td>
+                                  <td>
+                                    <% if (stay) { %>
+                                      <div class="fw-bold text-dark">
+                                        <% if(stay.residentType==="member" ) { %>
+                                          <%= (stay.member && stay.member.firstName) || "No Name" %>
+                                            <%= (stay.member && stay.member.lastName) || "" %>
+                                              <% } else { %>
+                                                <%= (stay.tenant && stay.tenant.firstName) || "No Name" %>
+                                                  <%= (stay.tenant && stay.tenant.lastName) || "" %>
+                                                    <% } %>
+                                      </div>
+                                      <div class="text-muted small">
+                                        <i class="fa-solid fa-phone me-1 opacity-50"></i>
+                                        <% if(stay.residentType==="member" ) { %>
+                                          <%= (stay.member && stay.member.firstMobileNo) || "N/A" %>
+                                            <% } else { %>
+                                              <%= (stay.tenant && stay.tenant.firstMobileNo) || "N/A" %>
+                                                <% } %>
+                                      </div>
+                                      <% } else { %>
+                                        <span class="text-muted small">—</span>
+                                        <% } %>
+                                  </td>
+                                  <td>
+                                    <% if (stay) { %>
+                                      <div class="small fw-medium">
+                                        <span class="text-success">
+                                          <%= stay.stayFrom ? new Date(stay.stayFrom).toLocaleDateString() : "—" %>
+                                        </span>
+                                        <span class="mx-1 opacity-50">→</span>
+                                        <span class="text-danger">
+                                          <%= stay.stayTo ? new Date(stay.stayTo).toLocaleDateString() : "Present" %>
+                                        </span>
+                                      </div>
+                                      <% } else { %>
+                                        <span class="text-muted small">—</span>
+                                        <% } %>
+                                  </td>
+                                  <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                      <% if (!stay) { %>
+                                        <a href="/flatStayMaster/addResident?flatId=<%= f._id %>"
+                                          class="action-icon btn-edit px-3 py-1 rounded-pill" title="Assign Resident"
+                                          style="width:auto;">
+                                          <i class="fa-solid fa-person-circle-plus me-1"></i> Move-in
+                                        </a>
+
+                                        <% } else { %>
+
+                                          <% if (stay.residentType==='member' && stay.member) { %>
+                                            <a href="/document-master/document-viewer/member/<%= stay.member._id %>"
+                                              class="action-icon btn-view" title="View Documents">
+                                              <i class="fa-solid fa-file-invoice"></i>
+                                            </a>
+
+                                            <% } else if (stay.residentType==='tenant' && stay.tenant) { %>
+                                              <a href="/document-master/document-viewer/tenant/<%= stay.tenant._id %>"
+                                                class="action-icon btn-view" title="View Documents">
+                                                <i class="fa-solid fa-file-invoice"></i>
+                                              </a>
+
+                                              <% } else { %>
+                                                <span class="text-muted">No Documents</span>
+                                                <% } %>
+
+                                                  <a href="/flatStayMaster/move-out/<%= stay._id %>"
+                                                    class="action-icon btn-delete px-3 py-1 rounded-pill"
+                                                    title="Check-out" style="width:auto;"
+                                                    onclick="return confirm('End this resident stay?')">
+                                                    <i class="fa-solid fa-door-closed me-1"></i> Move-out
+                                                  </a>
+
+                                                  <a href="/flatStayMaster/updateFlatStay/<%= stay._id %>"
+                                                    class="action-icon btn-edit" title="Update Profile">
+                                                    <i class="fa-solid fa-user-pen"></i>
+                                                  </a>
+
+                                                  <% } %>
+
+                                                    <a href="/flatStayMaster/history/<%= f._id %>"
+                                                      class="action-icon btn-view" title="Stay History">
+                                                      <i class="fa-solid fa-clock-rotate-left"></i>
+                                                    </a>
+
+                                    </div>
+                                  </td>
+
+                                </tr>
+                                <% }) %>
+                                  <% } else { %>
+                                    <tr>
+                                      <td colspan="5" class="text-center py-5">
+                                        <i class="fa-solid fa-folder-open d-block mb-3 fs-1 opacity-25 text-muted"></i>
+                                        No flats available to manage stay
+                                      </td>
+                                    </tr>
+                                    <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <%- include("../partials/script") %>
+
+    <script>
+      function filterStays() {
+        const value = document.getElementById("staySearch").value.toLowerCase();
+        const rows = document.querySelectorAll("#stayTable tbody tr");
+        rows.forEach(row => {
+          if (row.cells.length > 1) {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+          }
+        });
+      }
+
+      // Apply animation delays
+      document.querySelectorAll('tr[data-delay]').forEach(tr => {
+        tr.style.animationDelay = tr.getAttribute('data-delay');
+      });
+    </script>
+</body>
+
+</html>

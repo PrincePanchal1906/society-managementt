@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <title>Update Tenant | Society Management</title>
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --text-main: #2c3e50;
+        --text-muted: #7f8c8d;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+
+      .premium-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        overflow: hidden;
+      }
+
+      .header-section {
+        background: var(--primary-gradient);
+        padding: 2.5rem 1rem;
+        text-align: center;
+        color: white;
+      }
+
+      .header-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .icon-input {
+        position: relative;
+      }
+
+      .icon-input i {
+        position: absolute;
+        left: 1.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        transition: color 0.3s;
+        z-index: 5;
+      }
+
+      .form-control,
+      .form-select {
+        padding: 0.75rem 1rem 0.75rem 2.8rem;
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        background-color: #f8fafc;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background-color: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .form-control:focus+i,
+      .form-select:focus+i {
+        color: #667eea;
+      }
+
+      .btn-premium {
+        background: var(--primary-gradient);
+        border: none;
+        color: white !important;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 12px -2px rgba(118, 75, 162, 0.25);
+      }
+
+      .btn-premium:hover {
+        transform: translateY(-2px);
+        background: var(--primary-gradient);
+        box-shadow: 0 15px 20px -4px rgba(118, 75, 162, 0.35);
+      }
+
+      .back-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        transition: 0.2s;
+        background: white;
+        padding: 8px 16px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .back-link:hover {
+        color: var(--text-main);
+        transform: translateX(-5px);
+        background: #f8fafc;
+      }
+
+      .section-divider {
+        border-bottom: 2px solid #edf2f7;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        color: #667eea;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+        margin-top: 2rem;
+      }
+
+      /* Dynamic Document Styles */
+      .document-row {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .document-row:hover {
+        border-color: #667eea;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      }
+
+      .remove-row-btn {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+        transition: all 0.2s;
+        z-index: 10;
+      }
+
+      .remove-row-btn:hover {
+        transform: scale(1.1) rotate(90deg);
+        background: #dc2626;
+      }
+
+      .add-doc-btn {
+        background: white;
+        border: 2px dashed #667eea;
+        color: #667eea;
+        padding: 1rem;
+        border-radius: 12px;
+        width: 100%;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 2rem;
+      }
+
+      .add-doc-btn:hover {
+        background: #f5f7ff;
+        border-style: solid;
+        transform: translateY(-2px);
+      }
+
+      .existing-files {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .file-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.3s;
+      }
+
+      .file-item {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .file-item:hover .file-preview {
+        transform: scale(1.1);
+      }
+
+      .file-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .file-item:hover .file-overlay {
+        opacity: 1;
+      }
+
+      .overlay-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        color: white;
+        font-size: 0.8rem;
+        transition: all 0.2s;
+      }
+
+      .btn-view-file {
+        background: #3b82f6;
+      }
+
+      .btn-delete-file {
+        background: #ef4444;
+      }
+
+      .overlay-btn:hover {
+        transform: scale(1.15);
+      }
+
+      .error-text {
+        color: #ef4444;
+        font-size: 0.75rem;
+        margin-top: 4px;
+        min-height: 18px;
+        font-weight: 500;
+      }
+
+      .is-invalid {
+        border-color: #ef4444 !important;
+        background-image: none !important;
+      }
+    </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row g-0">
+      <div class="col-lg-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <div class="col-lg-10 min-vh-100 d-flex flex-column align-items-center justify-content-center py-5">
+        <div style="width: 100%; max-width: 800px;">
+          <a href="/tenant/tenantManagement" class="back-link animate__animated animate__fadeInLeft">
+            <i class="fa-solid fa-arrow-left"></i> Back to Tenants
+          </a>
+
+          <div class="premium-card animate__animated animate__fadeInUp">
+            <div class="header-section">
+              <div class="header-icon">
+                <i class="fa-solid fa-user-pen"></i>
+              </div>
+              <h3 class="fw-bold mb-1">Update Tenant Profile</h3>
+              <p class="mb-0 opacity-75 small text-uppercase">Modifying registry for <%= tenant.firstName %>
+              </p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+              <% if (locals.error) { %>
+                <div
+                  class="alert alert-danger border-0 rounded-4 text-center mb-4 py-3 shadow-sm animate__animated animate__shakeX">
+                  <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                  <%= error %>
+                </div>
+                <% } %>
+
+                  <form method="POST" action="/tenant/updateTenant/<%= tenant._id %>" enctype="multipart/form-data"
+                    novalidate onsubmit="return validateForm()">
+
+                    <!-- PERSONAL INFORMATION -->
+                    <div class="section-divider">Personal Information</div>
+                    <div class="row g-4 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">First Name</label>
+                        <div class="icon-input">
+                          <i class="fa-regular fa-user"></i>
+                          <input type="text" name="firstName" class="form-control"
+                            value="<%= locals.oldData?.firstName || tenant.firstName %>" required
+                            oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Middle Name</label>
+                        <div class="icon-input">
+                          <i class="fa-regular fa-user"></i>
+                          <input type="text" name="middleName" class="form-control"
+                            value="<%= locals.oldData?.middleName || tenant.middleName || '' %>"
+                            oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Last Name</label>
+                        <div class="icon-input">
+                          <i class="fa-regular fa-user"></i>
+                          <input type="text" name="lastName" class="form-control"
+                            value="<%= locals.oldData?.lastName || tenant.lastName || '' %>" required
+                            oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- CONTACT INFORMATION -->
+                    <div class="section-divider">Contact Details</div>
+                    <div class="row g-4 mb-4">
+                      <div class="col-md-6">
+                        <label class="form-label">Primary Mobile</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-mobile-screen-button"></i>
+                          <input type="text" name="firstMobileNo" class="form-control"
+                            value="<%= locals.oldData?.firstMobileNo || tenant.firstMobileNo %>" maxlength="10" required
+                            oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Secondary Mobile</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-phone"></i>
+                          <input type="text" name="secondMobileNo" class="form-control"
+                            value="<%= locals.oldData?.secondMobileNo || tenant.secondMobileNo || '' %>" maxlength="10"
+                            oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">Email Address</label>
+                        <div class="icon-input">
+                          <i class="fa-regular fa-envelope"></i>
+                          <input type="email" name="email" class="form-control"
+                            value="<%= locals.oldData?.email || tenant.email || '' %>" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ADDRESS INFORMATION -->
+                    <div class="section-divider">Original Address</div>
+                    <div class="row g-4 mb-4">
+                      <div class="col-md-6">
+                        <label class="form-label">State</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-map-location-dot"></i>
+                          <input type="text" name="state" class="form-control"
+                            value="<%= locals.oldData?.state || tenant.state || '' %>" required
+                            oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Pincode</label>
+                        <div class="icon-input">
+                          <i class="fa-solid fa-location-dot"></i>
+                          <input type="text" name="pincode" class="form-control"
+                            value="<%= locals.oldData?.pincode || tenant.pincode || '' %>" maxlength="6" required
+                            oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- KYC DOCUMENTATION -->
+                    <div class="section-divider">KYC Documentation</div>
+                    <div id="documentsContainer">
+                      <% const displayDocs=(locals.oldData && locals.oldData.documents) ?
+                        (Array.isArray(locals.oldData.documents) ? locals.oldData.documents :
+                        Object.values(locals.oldData.documents)) : tenant.documents; %>
+
+                        <% if (displayDocs && displayDocs.length> 0) { %>
+                          <% displayDocs.forEach((doc, idx)=> { %>
+                            <div class="document-row animate__animated animate__fadeIn">
+                              <button type="button" class="remove-row-btn" onclick="handleRemoveRow(this)"
+                                title="Remove this document">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                              <div class="row g-4">
+                                <div class="col-md-6">
+                                  <label class="form-label">Document Type <span class="text-danger">*</span></label>
+                                  <div class="icon-input">
+                                    <i class="fa-solid fa-id-card"></i>
+                                    <select name="documents[<%= idx %>][documentType]" class="form-select doc-type"
+                                      required
+                                      onchange="validateSelect(this, 'docTypeErr<%= idx %>'); preventDuplicateDocTypes();">
+                                      <option value="AADHAR" <%=doc.documentType==='AADHAR' ? 'selected' : '' %>>Aadhaar
+                                        Card</option>
+                                      <option value="DL" <%=doc.documentType==='DL' ? 'selected' : '' %>>Driving Licence
+                                      </option>
+                                      <option value="PAN" <%=doc.documentType==='PAN' ? 'selected' : '' %>>PAN Card
+                                      </option>
+                                      <option value="PASSPORT" <%=doc.documentType==='PASSPORT' ? 'selected' : '' %>
+                                        >Passport</option>
+                                      <option value="VOTER_ID" <%=doc.documentType==='VOTER_ID' ? 'selected' : '' %>
+                                        >Voter ID</option>
+                                      <option value="POLICE_VERIFICATION" <%=doc.documentType==='POLICE_VERIFICATION'
+                                        ? 'selected' : '' %>>Police Verification</option>
+                                      <option value="RENTAL_AGREEMENT" <%=doc.documentType==='RENTAL_AGREEMENT'
+                                        ? 'selected' : '' %>>Rental Agreement</option>
+                                    </select>
+                                  </div>
+                                  <div id="docTypeErr<%= idx %>" class="error-text"></div>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="form-label">Update Files (Leave empty to keep current)</label>
+                                  <div class="icon-input">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <input type="file" name="documents[<%= idx %>][files]"
+                                      class="form-control doc-files" accept="image/png, image/jpeg, image/jpg" multiple>
+                                  </div>
+                                  <div id="filesErr<%= idx %>" class="error-text"></div>
+                                  <div class="existing-files">
+                                    <% if (doc.filesPath) { %>
+                                      <% doc.filesPath.forEach((filePath, fIdx)=> { %>
+                                        <div class="file-item animate__animated animate__zoomIn">
+                                          <img src="<%= filePath %>" class="file-preview" alt="preview">
+                                          <div class="file-overlay">
+                                            <a href="<%= filePath %>" class="overlay-btn btn-view-file"
+                                              title="View Full Image">
+                                              <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            <button type="button" class="overlay-btn btn-delete-file"
+                                              onclick="markForDelete(this, '<%= filePath %>')">
+                                              <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                          </div>
+                                          <input type="hidden" name="documents[<%= idx %>][existingFiles][]"
+                                            value="<%= filePath %>">
+                                        </div>
+                                        <% }) %>
+                                          <% } %>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <% }) %>
+                              <% } else { %>
+                                <div class="document-row animate__animated animate__fadeIn">
+                                  <div class="row g-4">
+                                    <div class="col-md-6">
+                                      <label class="form-label">Document Type <span class="text-danger">*</span></label>
+                                      <div class="icon-input">
+                                        <i class="fa-solid fa-id-badge"></i>
+                                        <select name="documents[0][documentType]" class="form-select doc-type" required
+                                          onchange="validateSelect(this, 'docTypeErr0'); preventDuplicateDocTypes();">
+                                          <option value="">Select Document Type</option>
+                                          <option value="AADHAR">Aadhaar</option>
+                                          <option value="DL">Driving Licence</option>
+                                          <option value="PAN">PAN Card</option>
+                                          <option value="PASSPORT">Passport</option>
+                                          <option value="VOTER_ID">Voter ID</option>
+                                          <option value="POLICE_VERIFICATION">Police Verification</option>
+                                          <option value="RENTAL_AGREEMENT">Rental Agreement</option>
+                                        </select>
+                                      </div>
+                                      <div id="docTypeErr0" class="error-text"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label class="form-label">Upload Files <span class="text-danger">*</span></label>
+                                      <div class="icon-input">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <input type="file" name="documents[0][files]" class="form-control doc-files"
+                                          accept="image/png, image/jpeg, image/jpg" multiple>
+                                      </div>
+                                      <div id="filesErr0" class="error-text"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <% } %>
+                    </div>
+
+                    <button type="button" class="add-doc-btn" onclick="addDocumentRow()">
+                      <i class="fa-solid fa-plus-circle"></i> Add Another Document Type
+                    </button>
+
+                    <div id="globalDeleteFilesContainer"></div>
+
+                    <div class="d-grid pt-2">
+                      <button type="submit" class="btn-premium shadow-sm">
+                        <i class="fa-solid fa-check-double me-2"></i> Update Tenant Information
+                      </button>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+
+    <script>
+      function validateForm() {
+        let isValid = true;
+        const form = document.querySelector('form');
+
+        // Basic fields
+        const requiredFields = form.querySelectorAll('[required]:not(.doc-type):not(.doc-files)');
+        requiredFields.forEach(field => {
+          if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add('is-invalid');
+          } else {
+            field.classList.remove('is-invalid');
+          }
+        });
+
+        // Documents
+        document.querySelectorAll(".document-row").forEach((row, idx) => {
+          const select = row.querySelector(".doc-type");
+          const fileInput = row.querySelector(".doc-files");
+          const typeErr = document.getElementById(`docTypeErr${idx}`);
+          const filesErr = document.getElementById(`filesErr${idx}`);
+
+          if (typeErr) typeErr.innerText = "";
+          if (filesErr) filesErr.innerText = "";
+
+          if (!select.value) {
+            if (typeErr) typeErr.innerText = "Selection required";
+            isValid = false;
+          }
+
+          // Files are only required for NEW rows (where no existing-files preview is present)
+          const hasExisting = row.querySelector(".file-preview");
+          // Check if all existing files are marked for delete
+          const visibleExisting = Array.from(row.querySelectorAll(".file-item")).filter(item => item.style.display !== 'none');
+
+          if (visibleExisting.length === 0 && (!fileInput.files || fileInput.files.length === 0)) {
+            if (filesErr) filesErr.innerText = "At least one file required";
+            isValid = false;
+          }
+        });
+
+        if (!isValid) {
+          const firstError = document.querySelector('.error-text:not(:empty), .is-invalid');
+          if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        return isValid;
+      }
+
+      function validateSelect(el, id) {
+        const err = document.getElementById(id);
+        if (!el.value) {
+          if (err) err.innerText = "Selection required";
+          return false;
+        }
+        if (err) err.innerText = "";
+        return true;
+      }
+
+      function preventDuplicateDocTypes() {
+        const selects = document.querySelectorAll(".doc-type");
+        const used = [];
+        selects.forEach(sel => {
+          if (sel.value) {
+            if (used.includes(sel.value)) {
+              alert("Same document type cannot be selected twice");
+              sel.value = "";
+            } else {
+              used.push(sel.value);
+            }
+          }
+        });
+      }
+
+      const initialCount = parseInt('<%= (tenant.documents) ? tenant.documents.length : 1 %>', 10);
+      let rowCount = initialCount;
+
+      function addDocumentRow() {
+        const container = document.getElementById("documentsContainer");
+        const currentIndex = rowCount;
+        const row = document.createElement("div");
+        row.className = "document-row animate__animated animate__zoomIn";
+        row.innerHTML = `
+        <button type="button" class="remove-row-btn" onclick="handleRemoveRow(this)" title="Remove this document">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label">Document Type <span class="text-danger">*</span></label>
+            <div class="icon-input">
+              <i class="fa-solid fa-id-badge"></i>
+              <select name="documents[${currentIndex}][documentType]" class="form-select doc-type" required
+                onchange="validateSelect(this, 'docTypeErr${currentIndex}'); preventDuplicateDocTypes();">
+                <option value="">Select ID Type</option>
+                <option value="AADHAR">Aadhaar</option>
+                <option value="DL">Driving Licence</option>
+                <option value="PAN">PAN Card</option>
+                <option value="PASSPORT">Passport</option>
+                <option value="VOTER_ID">Voter ID</option>
+                <option value="POLICE_VERIFICATION">Police Verification</option>
+                <option value="RENTAL_AGREEMENT">Rental Agreement</option>
+              </select>
+            </div>
+            <div id="docTypeErr${currentIndex}" class="error-text"></div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Upload Files <span class="text-danger">*</span></label>
+            <div class="icon-input">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <input type="file" name="documents[${currentIndex}][files]" class="form-control doc-files" 
+                accept="image/png, image/jpeg, image/jpg" multiple required
+                onchange="if(this.files.length > 0) document.getElementById('filesErr${currentIndex}').innerText = ''">
+            </div>
+            <div id="filesErr${currentIndex}" class="error-text"></div>
+          </div>
+        </div>
+      `;
+        container.appendChild(row);
+        rowCount++;
+      }
+
+      function handleRemoveRow(btn) {
+        const row = btn.closest(".document-row");
+        const container = document.getElementById("globalDeleteFilesContainer");
+
+        const existingFiles = row.querySelectorAll('input[name*="existingFiles"]');
+        existingFiles.forEach(input => {
+          const deleteInput = document.createElement("input");
+          deleteInput.type = "hidden";
+          deleteInput.name = "globalDeleteFiles[]";
+          deleteInput.value = input.value;
+          container.appendChild(deleteInput);
+        });
+
+        row.remove();
+        rowCount--;
+      }
+
+      function markForDelete(btn, filePath) {
+        const fileItem = btn.closest(".file-item");
+        if (fileItem) fileItem.style.display = "none";
+
+        const container = document.getElementById("globalDeleteFilesContainer");
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "globalDeleteFiles[]";
+        input.value = filePath;
+        container.appendChild(input);
+      }
+    </script>
+</body>
+
+</html>

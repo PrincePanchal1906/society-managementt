@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+        <title>Visitor Management | Society Management</title>
+        <style>
+            .visitor-option-card {
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border-radius: 24px;
+                border: 1px solid var(--glass-border);
+                padding: 3rem 2rem;
+                text-align: center;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                text-decoration: none;
+                display: block;
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+                box-shadow: var(--card-shadow);
+            }
+
+            .visitor-option-card:hover {
+                transform: translateY(-12px);
+                box-shadow: var(--hover-shadow);
+                border-color: var(--accent-color);
+            }
+
+            .visitor-option-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 6px;
+                background: var(--primary-gradient);
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .visitor-option-card:hover::before {
+                opacity: 1;
+            }
+
+            .visitor-icon-box {
+                width: 80px;
+                height: 80px;
+                border-radius: 22px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2.2rem;
+                margin-bottom: 2rem;
+                transition: all 0.3s;
+            }
+
+            .visitor-option-card:hover .visitor-icon-box {
+                transform: scale(1.1) rotate(5deg);
+            }
+
+            .icon-box-blue {
+                background: rgba(52, 152, 219, 0.1);
+                color: #3498db;
+            }
+
+            .icon-box-red {
+                background: rgba(231, 76, 60, 0.1);
+                color: #e74c3c;
+            }
+
+            .icon-box-purple {
+                background: rgba(155, 89, 182, 0.1);
+                color: #9b59b6;
+            }
+
+            .visitor-option-title {
+                font-weight: 800;
+                color: var(--text-main);
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .visitor-option-desc {
+                color: var(--text-muted);
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+
+            .visitor-arrow {
+                margin-top: 1.5rem;
+                font-size: 1.2rem;
+                color: var(--accent-color);
+                opacity: 0;
+                transform: translateX(-10px);
+                transition: all 0.3s;
+            }
+
+            .visitor-option-card:hover .visitor-arrow {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-lg-2">
+                <%- include("../partials/leftSidebar") %>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-10 p-4 min-vh-100">
+                <div class="premium-card p-4 animate__animated animate__fadeIn"
+                    style="background: transparent; box-shadow: none; border: none;">
+                    <!-- Header Section -->
+                    <div class="header-section rounded-4">
+                        <div>
+                            <h2 class="fw-bold mb-0 text-white"><i class="fa-solid fa-id-card-clip me-3"></i>Visitor
+                                Control Center</h2>
+                            <p class="mb-0 small opacity-75 text-uppercase fw-bold">Manage entry, exit and logs
+                                efficiently</p>
+                        </div>
+                    </div>
+
+                    <!-- Options Grid -->
+                    <div class="row g-4 mt-4 justify-content-center">
+                        <!-- New Entry -->
+                        <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                            <a href="/visitor/addVisitor" class="visitor-option-card">
+                                <div class="visitor-icon-box icon-box-blue">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                </div>
+                                <h3 class="visitor-option-title">New Entry</h3>
+                                <p class="visitor-option-desc">Register a new visitor arrival with purpose, contact, and
+                                    check-in time.</p>
+                                <div class="visitor-arrow">
+                                    GO TO REGISTRATION <i class="fa-solid fa-arrow-right ms-2"></i>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Visitor Exit -->
+                        <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                            <a href="/visitor/pendingVisitors" class="visitor-option-card">
+                                <div class="visitor-icon-box icon-box-red">
+                                    <i class="fa-solid fa-person-walking-arrow-right"></i>
+                                </div>
+                                <h3 class="visitor-option-title">Visitor Exit</h3>
+                                <p class="visitor-option-desc">Mark departure for currently active visitors in the
+                                    society premises.</p>
+                                <div class="visitor-arrow">
+                                    CHECK OUT VISITORS <i class="fa-solid fa-arrow-right ms-2"></i>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Visitor History -->
+                        <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                            <a href="/visitor/history" class="visitor-option-card">
+                                <div class="visitor-icon-box icon-box-purple">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                </div>
+                                <h3 class="visitor-option-title">Visitor History</h3>
+                                <p class="visitor-option-desc">Comprehensive logs of all past visits with duration and
+                                    details.</p>
+                                <div class="visitor-arrow">
+                                    VIEW LOG HISTORY <i class="fa-solid fa-arrow-right ms-2"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../partials/script") %>
+</body>
+
+</html>

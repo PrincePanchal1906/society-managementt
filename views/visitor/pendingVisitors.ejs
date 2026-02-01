@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+        <title>Pending Visitors | Society Management</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-lg-2">
+                <%- include("../partials/leftSidebar") %>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-10 p-4 min-vh-100">
+                <div class="premium-card p-2 animate__animated animate__fadeIn">
+                    <!-- Header Section -->
+                    <div class="header-section" style="background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);">
+                        <div>
+                            <h3 class="fw-bold mb-0 text-white"><i
+                                    class="fa-solid fa-person-circle-exclamation me-2"></i>Active Visitors</h3>
+                            <p class="mb-0 small opacity-75 text-uppercase fw-bold">Currently checked-in within society
+                                premises</p>
+                        </div>
+                        <a href="/visitor/visitorManagement" class="btn-premium">
+                            <i class="fa-solid fa-chevron-left me-1"></i> Dashboard
+                        </a>
+                    </div>
+
+                    <div class="px-3 pb-3">
+                        <% if (!pendingVisitors || pendingVisitors.length===0) { %>
+                            <div class="text-center py-5">
+                                <i class="fa-solid fa-clipboard-check d-block mb-3 fs-1 opacity-25 text-muted"></i>
+                                <h4 class="text-muted fw-bold">All Clear!</h4>
+                                <p class="text-muted">No visitors are currently checked in at this moment.</p>
+                                <a href="/visitor/addVisitor"
+                                    class="btn btn-sm btn-outline-success rounded-pill px-4 mt-2">Check In New
+                                    Visitor</a>
+                            </div>
+                            <% } else { %>
+                                <!-- Table Area -->
+                                <div class="table-responsive">
+                                    <table class="table fancy-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Visitor Profile</th>
+                                                <th>Visiting Flat</th>
+                                                <th>Entry Timestamp</th>
+                                                <th>Purpose of Visit</th>
+                                                <th class="text-center">Operations</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% pendingVisitors.forEach((visitor, index)=> { %>
+                                                <tr class="animate__animated animate__fadeInUp"
+                                                    style="animation-delay: <%= index * 0.05 %>s">
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="action-icon me-3 bg-light text-danger"
+                                                                style="width: 45px; height: 45px; border-radius: 14px;">
+                                                                <i class="fa-solid fa-user-clock"></i>
+                                                            </div>
+                                                            <div>
+                                                                <div class="fw-bold text-dark">
+                                                                    <%= visitor.visitorName %>
+                                                                </div>
+                                                                <div class="text-muted small">
+                                                                    <%= visitor.relation %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge-premium bg-light text-dark border">
+                                                            <%= visitor.flatNo %>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small fw-bold text-secondary">
+                                                            <i
+                                                                class="fa-regular fa-clock me-2 opacity-75 text-danger"></i>
+                                                            <%= visitor.entryTime %>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small text-muted">
+                                                            <%= visitor.purpose %>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <form action="/visitor/exit/<%= visitor._id %>" method="POST"
+                                                            style="display:inline;">
+                                                            <button class="btn btn-premium btn-sm"
+                                                                style="background: rgba(255, 117, 140, 0.1); color: #ff758c; border: 1px solid rgba(255, 117, 140, 0.2);"
+                                                                type="submit"
+                                                                onclick="return confirm('Confirm check-out for <%= visitor.visitorName %>?')">
+                                                                <i class="fa-solid fa-door-open me-1"></i> Mark Exit
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../partials/script") %>
+</body>
+
+</html>

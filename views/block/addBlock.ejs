@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Block</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Animate Config -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f0f2f5;
+        overflow-x: hidden;
+      }
+
+      /* 🟣 FORM CARD */
+      .form-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: none;
+        overflow: hidden;
+        max-width: 500px;
+        width: 100%;
+        margin: 2rem auto;
+      }
+
+      .card-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2.5rem 2rem;
+        color: white;
+        text-align: center;
+        position: relative;
+      }
+
+      .card-header-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        display: inline-block;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.1);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: #4a5568;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .input-group-text {
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-right: none;
+        color: #718096;
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+      }
+
+      .form-control {
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #fcfcfd;
+      }
+
+      .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: #667eea;
+        background: white;
+      }
+
+      /* 🔘 BUTTONS */
+      .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 14px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-radius: 12px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 1rem;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 8px 20px rgba(118, 75, 162, 0.4);
+        color: white;
+      }
+
+      .btn-back {
+        color: #718096;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        transition: color 0.2s;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .btn-back:hover {
+        color: #4a5568;
+        background: #f8f9fa;
+      }
+
+      /* 🔴 ERROR ALERT */
+      .alert-custom {
+        background: #fff5f5;
+        border: 1px solid #fed7d7;
+        color: #c53030;
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+    </style>
+</head>
+
+<body>
+
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+
+      <!-- LEFT SIDEBAR -->
+      <div class="col-2">
+        <%- include("../partials/leftSidebar") %>
+      </div>
+
+      <!-- RIGHT CONTENT -->
+      <div class="col-10 main-content py-5 d-flex flex-column align-items-center justify-content-center"
+        style="min-height: 100vh; background-color: #f8f9fa;">
+
+        <div style="width: 100%; max-width: 500px;">
+          <!-- BACK LINK -->
+          <a href="/block/blockManagement" class="btn-back animate__animated animate__fadeIn">
+            <i class="fa-solid fa-arrow-left"></i> Back to Blocks
+          </a>
+
+          <div class="form-card animate__animated animate__fadeInUp">
+
+            <div class="card-header-custom">
+              <i class="fa-solid fa-city card-header-icon"></i>
+              <h3 class="fw-bold mb-1">Add New Block</h3>
+              <p class="mb-0 text-white-50 small">Configure a new residential block</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+
+              <% if (error) { %>
+                <div class="alert alert-custom d-flex align-items-center mb-4" role="alert">
+                  <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                  <%= error %>
+                </div>
+                <% } %>
+
+                  <form action="/block/addBlock" method="POST" novalidate>
+
+                    <!-- BLOCK NAME -->
+                    <div class="mb-4">
+                      <label class="form-label">Block Name</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fa-regular fa-building"></i></span>
+                        <input type="text" name="blockName" class="form-control" placeholder="Block A "
+                          value="<%= oldData?.blockName || '' %>">
+                      </div>
+                    </div>
+
+                    <!-- NUMBER OF FLATS & SIZE -->
+                    <div class="row mb-4">
+                      <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label">Number of Flats</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-layer-group"></i></span>
+                          <input type="text" inputmode="numeric" name="numberOfFlats" maxlength="5"
+                            oninput="validateNumber(this)" class="form-control"
+                            value="<%= oldData?.numberOfFlats || '' %>">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Size of Flats</label>
+
+                        <!-- SIZE UNIT DROPDOWN -->
+                        <div class="input-group mb-2">
+                          <span class="input-group-text"><i class="fa-solid fa-ruler"></i></span>
+                          <select name="sizeUnit" class="form-select">
+                            <option value="">Select Unit</option>
+                            <option value="SQFT" <%=oldData?.sizeUnit==="SQFT" ? "selected" : "" %>>
+                              Square Feet
+                            </option>
+                            <option value="SQYD" <%=oldData?.sizeUnit==="SQYD" ? "selected" : "" %>>
+                              Square Yard
+                            </option>
+                            <option value="SQM" <%=oldData?.sizeUnit==="SQM" ? "selected" : "" %>>
+                              Square Meter
+                            </option>
+                          </select>
+                        </div>
+
+                        <!-- SIZE VALUE -->
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-ruler-combined"></i></span>
+                          <input type="number" name="sizeOfFlats" maxlength="5" class="form-control"
+                            placeholder="Enter size" min="1" oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                            value="<%= oldData?.sizeOfFlats || '' %>">
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- ROOM DETAILS (NEW SCHEMA) -->
+                    <div class="mb-3">
+                      <label class="form-label fw-bold text-dark border-bottom pb-1 d-block mb-3">Room
+                        Configuration</label>
+                    </div>
+
+                    <div class="row mb-4">
+                      <!-- BEDROOM -->
+                      <div class="col-md-4 mb-3">
+                        <label class="form-label small">Bedrooms</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-bed"></i></span>
+                          <input type="text" name="numberOfBedroom" class="form-control" placeholder="Ex: 2"
+                            maxlength="1" inputmode="numeric" oninput="singleDigitOnly(this)"
+                            value="<%= oldData?.numberOfBedroom || '' %>">
+
+                        </div>
+                      </div>
+
+                      <!-- HALL -->
+                      <div class="col-md-4 mb-3">
+                        <label class="form-label small">Halls</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-couch"></i></span>
+                          <input type="text" name="numberOfHall" class="form-control" placeholder="Ex: 1" maxlength="1"
+                            inputmode="numeric" oninput="singleDigitOnly(this)"
+                            value="<%= oldData?.numberOfHall || '' %>">
+
+                        </div>
+                      </div>
+
+                      <!-- KITCHEN -->
+                      <div class="col-md-4 mb-3">
+                        <label class="form-label small">Kitchens</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="fa-solid fa-utensils"></i></span>
+                          <input type="text" name="numberOfKitchen" class="form-control" placeholder="Ex: 1"
+                            maxlength="1" inputmode="numeric" oninput="singleDigitOnly(this)"
+                            value="<%= oldData?.numberOfKitchen || '' %>">
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- SUBMIT BUTTON -->
+                    <div class="d-grid mt-5">
+                      <button type="submit" class="btn btn-primary btn-submit text-white shadow-sm">
+                        <i class="fa-solid fa-plus me-2"></i> Create Block
+                      </button>
+                    </div>
+
+                  </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <%- include("../partials/script") %>
+    <script>
+      function validateNumber(input) {
+        // remove non-numbers
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        const errorEl = document.getElementById("numberError");
+
+        if (input.value.length > 5) {
+          errorEl.innerText = "Maximum 5 digits allowed";
+          input.value = input.value.slice(0, 5);
+        } else {
+          errorEl.innerText = "";
+        }
+      }
+    </script>
+    <script>
+      function singleDigitOnly(input) {
+        // remove non-numeric
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        // allow only 1–9
+        if (input.value.length > 1) {
+          input.value = input.value.slice(0, 1);
+        }
+
+        if (input.value === '0') {
+          input.value = '';
+        }
+      }
+    </script>
+
+</body>
+
+</html>

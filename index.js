@@ -43,7 +43,6 @@ app.set("views", path.resolve("./views"));
 
 
 // app.use("/",staticRoutes); helloooo
-<p>hello everyone</p>
 app.use("/", userRoutes);
 app.use("/block", blockRoutes);
 app.use("/flat", flatRoutes);

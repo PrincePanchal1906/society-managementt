@@ -42,7 +42,8 @@ app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
 
-// app.use("/",staticRoutes); hellii0000
+// app.use("/",staticRoutes); helloooo
+<p>hello everyone</p>
 app.use("/", userRoutes);
 app.use("/block", blockRoutes);
 app.use("/flat", flatRoutes);

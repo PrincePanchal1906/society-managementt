@@ -42,7 +42,12 @@ app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
 
+<<<<<<< HEAD
 
+=======
+// app.use("/",staticRoutes); helloooo
+<p>helo everyone</p>
+>>>>>>> ffc292511e16d6849e8cac0b36e64643003be9e3
 app.use("/", userRoutes);
 app.use("/block", blockRoutes);
 app.use("/flat", flatRoutes);

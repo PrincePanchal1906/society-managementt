@@ -334,8 +334,8 @@
                 </div>
                 <% } %>
 
-                  <form method="POST" action="/member/update/<%= member ? member._id : '' %>"
-                    enctype="multipart/form-data" onsubmit="return validateForm()" novalidate>
+                  <form method="POST" action="/member/update/<%= member._id %>" enctype="multipart/form-data"
+                    onsubmit="return validateForm()" novalidate>
 
                     <!-- PROPERTY ASSIGNMENT -->
                     <div class="section-divider">Property Assignment</div>
@@ -350,7 +350,7 @@
 
                             <% blocks.forEach(b=> { %>
                               <option value="<%= b.blockName %>" <%=(locals.oldData?.blockName ||
-                                member?.blockName)===b.blockName ? 'selected' : '' %>>
+                                member.blockName)===b.blockName ? 'selected' : '' %>>
                                 <%= b.blockName %>
                               </option>
                               <% }) %>
@@ -398,7 +398,7 @@
                         <div class="icon-input">
                           <i class="fa-regular fa-user"></i>
                           <input type="text" name="middleName" class="form-control"
-                            value="<%= locals.oldData?.middleName || member?.middleName || '' %>"
+                            value="<%= locals.oldData?.middleName || member.middleName || '' %>"
                             oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')" placeholder="Middle Name">
                         </div>
                       </div>
@@ -431,7 +431,7 @@
                         <div class="icon-input">
                           <i class="fa-solid fa-phone"></i>
                           <input type="text" name="secondMobileNo" class="form-control"
-                            value="<%= locals.oldData?.secondMobileNo || member?.secondMobileNo || '' %>" maxlength="10"
+                            value="<%= locals.oldData?.secondMobileNo || member.secondMobileNo || '' %>" maxlength="10"
                             oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="Optional mobile">
                         </div>
                       </div>
@@ -449,7 +449,7 @@
                         <div class="icon-input">
                           <i class="fa-regular fa-calendar-days"></i>
                           <% let pDate="" ; if (locals.oldData?.purchaseDate) pDate=locals.oldData.purchaseDate; else if
-                            (member?.purchaseDate) pDate=new Date(member.purchaseDate).toISOString().split('T')[0]; %>
+                            (member.purchaseDate) pDate=new Date(member.purchaseDate).toISOString().split('T')[0]; %>
                             <input type="date" name="purchaseDate" class="form-control" value="<%= pDate %>"
                               max="<%= new Date().toISOString().split('T')[0] %>" required>
                         </div>
@@ -465,63 +465,67 @@
                         <% if (displayDocs && displayDocs.length> 0) { %>
                           <% displayDocs.forEach((doc, idx)=> { %>
                             <div class="document-row animate__animated animate__fadeIn">
-                              <button type="button" class="remove-row-btn" onclick="handleRemoveRow(this)"
-                                title="Remove this document">
-                                <i class="fa-solid fa-trash-can"></i>
-                              </button>
-                              <div class="row g-4">
-                                <div class="col-md-6">
-                                  <label class="form-label">Document Type <span class="text-danger">*</span></label>
-                                  <div class="icon-input">
-                                    <i class="fa-solid fa-id-card"></i>
-                                    <select name="documents[<%= idx %>][documentType]" class="form-select doc-type"
-                                      required
-                                      onchange="validateSelect(this, 'docTypeErr<%= idx %>'); preventDuplicateDocTypes();">
-                                      <option value="AADHAR" <%=doc.documentType==='AADHAR' ? 'selected' : '' %>
-                                        >Aadhaar Card</option>
-                                      <option value="DL" <%=doc.documentType==='DL' ? 'selected' : '' %>>Driving
-                                        Licence</option>
-                                      <option value="PAN" <%=doc.documentType==='PAN' ? 'selected' : '' %>>PAN Card
-                                      </option>
-                                      <option value="PASSPORT" <%=doc.documentType==='PASSPORT' ? 'selected' : '' %>
-                                        >Passport</option>
-                                      <option value="TRANSFER DOCUMENT" <%=doc.documentType==='TRANSFER DOCUMENT'
-                                        ? 'selected' : '' %>>Transfer Document</option>
-                                    </select>
+                              <% if (idx> 0) { %>
+                                <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()"
+                                  title="Remove this document">
+                                  <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                                <% } %>
+                                  <div class="row g-4">
+                                    <div class="col-md-6">
+                                      <label class="form-label">Document Type <span class="text-danger">*</span></label>
+                                      <div class="icon-input">
+                                        <i class="fa-solid fa-id-card"></i>
+                                        <select name="documents[<%= idx %>][documentType]" class="form-select doc-type"
+                                          required
+                                          onchange="validateSelect(this, 'docTypeErr<%= idx %>'); preventDuplicateDocTypes();">
+                                          <option value="AADHAR" <%=doc.documentType==='AADHAR' ? 'selected' : '' %>
+                                            >Aadhaar Card</option>
+                                          <option value="DL" <%=doc.documentType==='DL' ? 'selected' : '' %>>Driving
+                                            Licence</option>
+                                          <option value="PAN" <%=doc.documentType==='PAN' ? 'selected' : '' %>>PAN Card
+                                          </option>
+                                          <option value="PASSPORT" <%=doc.documentType==='PASSPORT' ? 'selected' : '' %>
+                                            >Passport</option>
+                                        </select>
+                                      </div>
+                                      <div id="docTypeErr<%= idx %>" class="error-text"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label class="form-label">Update Files (Leave empty to keep current)</label>
+                                      <div class="icon-input">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <input type="file" name="documents[<%= idx %>][files]"
+                                          class="form-control doc-files" accept="image/png, image/jpeg, image/jpg"
+                                          multiple>
+                                      </div>
+                                      <div id="filesErr<%= idx %>" class="error-text"></div>
+                                      <div class="existing-files">
+                                        <% if (doc.filesPath) { %>
+                                          <% doc.filesPath.forEach((filePath, fIdx)=> { %>
+                                            <div class="file-item animate__animated animate__zoomIn">
+                                              <img src="<%= filePath %>" class="file-preview" alt="preview">
+                                              <div class="file-overlay">
+                                                <a href="<%= filePath %>"
+                                                  class="overlay-btn btn-view-file" title="View Full Image">
+                                                  <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                                <button type="button" class="overlay-btn btn-delete-file"
+                                                   onclick="console.log('CLICKED'); markForDelete(this, '<%= filePath %>')">
+  ❌
+                                                  title="Delete this file">
+                                                  <i class="fa-solid fa-xmark"></i>
+                                                </button>
+                                              </div>
+                                              <input type="hidden" name="documents[<%= idx %>][existingFiles][]"
+                                                value="<%= filePath %>">  
+                                            </div>
+                                            <div id="deleteFilesContainer"></div>
+                                            <% }) %>
+                                              <% } %>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div id="docTypeErr<%= idx %>" class="error-text"></div>
-                                </div>
-                                <div class="col-md-6">
-                                  <label class="form-label">Update Files (Leave empty to keep current)</label>
-                                  <div class="icon-input">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <input type="file" name="documents[<%= idx %>][files]"
-                                      class="form-control doc-files" accept="image/png, image/jpeg, image/jpg" multiple>
-                                  </div>
-                                  <div id="filesErr<%= idx %>" class="error-text"></div>
-                                  <div class="existing-files">
-                                    <% if (doc.filesPath) { %>
-                                      <% doc.filesPath.forEach((filePath, fIdx)=> { %>
-                                        <div class="file-item animate__animated animate__zoomIn">
-                                          <img src="<%= filePath %>" class="file-preview" alt="preview">
-                                          <div class="file-overlay">
-                                            <a href="<%= filePath %>" class="overlay-btn btn-view-file"
-                                              title="View Full Image">
-                                              <i class="fa-solid fa-eye"></i>
-                                            </a>
-                                            <button type="button" class="overlay-btn btn-delete-file"
-                                              onclick="markForDelete(this, '<%= filePath %>')">
-                                              <i class="fa-solid fa-trash-can"></i>
-                                            </button>
-                                          </div>
-                                          <input type="hidden" name="documents[<%= idx %>][existingFiles][]"
-                                            value="<%= filePath %>">
-                                        </div>
-                                        <% }) %>
-                                          <% } %>
-                                  </div>
-                                </div>
-                              </div>
                             </div>
                             <% }) %>
                               <% } else { %>
@@ -539,7 +543,6 @@
                                           <option value="DL">Driving Licence</option>
                                           <option value="PAN">PAN Card</option>
                                           <option value="PASSPORT">Passport</option>
-                                          <option value="TRANSFER DOCUMENT">Transfer Document</option>
                                         </select>
                                       </div>
                                       <div id="docTypeErr0" class="error-text"></div>
@@ -562,15 +565,13 @@
                       <i class="fa-solid fa-plus-circle"></i> Add Another Document Type
                     </button>
 
-                    <div id="globalDeleteFilesContainer"></div>
-
                     <div class="d-grid pt-2">
                       <button type="submit" class="btn-premium shadow-sm">
                         <i class="fa-solid fa-check-double me-2"></i> Update Member Registry
                       </button>
                     </div>
                   </form>
-
+                  
             </div>
           </div>
         </div>
@@ -660,7 +661,7 @@
         const row = document.createElement("div");
         row.className = "document-row animate__animated animate__zoomIn";
         row.innerHTML = `
-          <button type="button" class="remove-row-btn" onclick="handleRemoveRow(this)" title="Remove this document">
+          <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this document">
             <i class="fa-solid fa-trash-can"></i>
           </button>
           <div class="row g-4">
@@ -723,44 +724,17 @@
         });
       }
     </script>
-    <script>
-      function handleRemoveRow(btn) {
-        const row = btn.closest(".document-row");
-        const container = document.getElementById("globalDeleteFilesContainer");
+      <script>
+  function markForDelete(btn, filePath) {
+    // remove hidden input for this filePath
+    const fileItem = btn.closest(".file-item");
 
-        // Find all existing files in this row
-        const existingFiles = row.querySelectorAll('input[name*="existingFiles"]');
-        existingFiles.forEach(input => {
-          const deleteInput = document.createElement("input");
-          deleteInput.type = "hidden";
-          deleteInput.name = "globalDeleteFiles[]";
-          deleteInput.value = input.value;
-          container.appendChild(deleteInput);
-        });
+    const hidden = fileItem.querySelector("input[type='hidden']");
+    if (hidden) hidden.remove();   // ✅ important
 
-        row.remove();
-        rowCount--; // Optional: keeps index clean for new rows if we don't care about gaps
-      }
-
-      function markForDelete(btn, filePath, idx) {
-        // UI hide
-        const fileItem = btn.closest(".file-item");
-        if (fileItem) fileItem.style.display = "none";
-
-        // hidden input add
-        const container = document.getElementById("globalDeleteFilesContainer");
-
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "globalDeleteFiles[]";
-        input.value = filePath;
-
-        container.appendChild(input);
-
-        console.log("Marked for delete:", filePath);
-      }
-    </script>
-
+    fileItem.remove(); // preview pan remove
+  }
+</script>
 
 
 </body>

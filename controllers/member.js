@@ -8,35 +8,24 @@ const { getAvailableFlats, getUpdateAvailableFlats } = require("../services/flat
 const { flatadd } = require("./flat");
 const { deleteFileSafe } = require("../services/deleteFileSafe");
 const { object } = require("joi");
-const { errHandleMulter } = require("../services/errHandleMulter");
-
+const {errHandleMulter} = require("../services/errHandleMulter")
 async function deleteUploadFiles(files = []) {
+    
     files.forEach(file => {
-        let filePath;
-        if (typeof file === 'string') {
-            filePath = file;
-        } else if (file.path) {
-            filePath = file.path;
-        } else {
-            return;
-        }
+        if(!file.path) return ;
+        const clean = file.path
+        .replace(process.cwd(), "")
+        .replace(/\\/g, "/")
+        .replace(/^\/+/, "");
 
-        const clean = filePath
-            .replace(process.cwd(), "")
-            .replace(/\\/g, "/")
-            .replace(/^\/+/, "")
-            .replace(/^public\//, "");
+        const fullPath =  path.join(process.cwd(),clean);
 
-        const fullPath = path.join(process.cwd(), "public", clean);
-
-        if (fs.existsSync(fullPath)) {
-            fs.unlink(fullPath, error => {
-                if (error) {
-                    console.log("Error deleting file:", fullPath, error);
-                }
-            });
-        }
-    });
+        fs.unlink(fullPath, err => {
+            if (err) {
+                console.log(err)
+            }
+        })
+    })
 }
 
 async function availableFlats(req, res) {
@@ -64,110 +53,70 @@ async function addMember(req, res) {
     const { blockName, flatNo, firstName, middleName
         , lastName, firstMobileNo,
         secondMobileNo, email, purchaseDate } = req.body;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    let finalData;
     try {
 
-        const alreadyAssignFlat = await Member.findOne({ blockName, flatNo, isBooked: true });
-        if (alreadyAssignFlat) {
-            if (req.files?.length) {
-                deleteUploadFiles(req.files)
+    const alreadyAssignFlat = await Member.findOne({ blockName, flatNo });
+    if (alreadyAssignFlat) {
+        if (req.files?.length) {
+            deleteUploadFiles(req.files)
+        }
+        return res.render("member/addMember", {
+            error: "flat-blockName is already exists",
+            oldData: req.body,
+            blocks,
+            flats,
+            members
+        })
+    }
+
+    let documents = [];
+    if (req.body.documents) {
+        Object.keys(req.body.documents).forEach(index => {
+            const documentType = req.body.documents[index].documentType
+            const relatedFiles = req.files.filter(
+                file => file.fieldname === `documents[${index}][files]`
+            );
+            if (relatedFiles.length > 0) {
+                documents.push({
+                    documentType,
+                    filesPath: relatedFiles.map(file =>{
+                        return file.path.split("public")[1].replace(/\\/g,"/");
+                    }
+                    )
+                })
             }
-            return res.render("member/addMember", {
-                error: "flat-blockName is already exists",
-                oldData: req.body,
-                blocks,
-                flats,
-                members
-            })
+        })
+    }
+
+    if (documents.length === 0) {
+        if (req.files?.lenght) {
+            deleteUploadFiles(req.files)
         }
-        const newPurchaseDate = new Date(purchaseDate);
-        newPurchaseDate.setHours(0, 0, 0, 0);
-        const memberHistory = await Member.find({
-            blockName,
-            flatNo,
-            status: "TRANSFER"
-        }).sort({ transferDate: -1 });
-        if (memberHistory.length > 0) {
-            const lastTransferDate = new Date(memberHistory[0].transferDate);
-
-            if (newPurchaseDate < lastTransferDate) {
-                if (req.files?.length) {
-                    deleteUploadFiles(req.files)
-                }
-                return res.render("member/addMember", {
-                    error: "Purchase date cannot be before last transfer date",
-                    oldData: req.body,
-                    blocks,
-                    flats,
-                    members
-                });
-            }
+        return res.render("member/addMember", {
+            
+            error: `documents is required`,
+            oldData: req.body,
+            blocks,
+            flats,
+        })
+    }
+    const finalData = { ...req.body, documents };
+    const { error } = memberValidationSchema.validate(finalData,{
+          allowUnknown: true
+    });
+    if (error) {
+        if (req.files?.length) {
+            deleteUploadFiles(req.files)
         }
-        if (newPurchaseDate > today) {
-            if (req.files?.length) {
-                deleteUploadFiles(req.files)
-            }
-            return res.render("member/addMember", {
-                error: "Purchase date cannot be a future date",
-                oldData: req.body,
-                blocks,
-                flats,
-                members
-            });
-        }
-
-
-        let documents = [];
-        if (req.body.documents) {
-            Object.keys(req.body.documents).forEach(index => {
-                const documentType = req.body.documents[index].documentType
-                const relatedFiles = req.files.filter(
-                    file => file.fieldname === `documents[${index}][files]`
-                );
-                if (relatedFiles.length > 0) {
-                    documents.push({
-                        documentType,
-                        filesPath: relatedFiles.map(file => {
-                            return file.path.split("public")[1].replace(/\\/g, "/");
-                        }
-                        )
-                    })
-                }
-            })
-        }
-
-        if (documents.length === 0) {
-            if (req.files?.length) {
-                deleteUploadFiles(req.files)
-            }
-            return res.render("member/addMember", {
-
-                error: `documents is required`,
-                oldData: req.body,
-                blocks,
-                flats,
-            })
-        }
-
-        finalData = { ...req.body, documents };
-        const { error } = memberValidationSchema.validate(finalData, {
-            allowUnknown: true
-        });
-        if (error) {
-            if (req.files?.length) {
-                deleteUploadFiles(req.files)
-            }
-            return res.render("member/addMember", {
-                error: error.details[0].message,
-                oldData: finalData,
-                blocks,
-                flats,
-                members
-            })
-        }
-
+        return res.render("member/addMember", {
+            error: error.details[0].message,
+            oldData: finalData,
+            blocks,
+            flats,
+            members
+        })
+    }
+    
 
         await Member.create({
             blockName,
@@ -184,10 +133,10 @@ async function addMember(req, res) {
         return res.redirect("/member/memberManagement");
     } catch (error) {
         if (error.code === 11000) {
-            if (req.files?.length) {
+            if (req.files?.lenght) {
                 deleteUploadFiles(req.files)
             }
-            if (error.keyValue?.email) {
+            if (error.keyvalue?.email) {
                 return res.render("member/addMember", {
                     error: "email is already exists",
                     oldData: finalData,
@@ -195,7 +144,7 @@ async function addMember(req, res) {
                     flats,
                 })
             }
-            if (error.keyValue?.firstMobileNo) {
+            if (error.keyvalue?.firstMobileNo) {
                 return res.render("member/addMember", {
                     error: "firstMobileNo is already exists",
                     oldData: finalData,
@@ -205,13 +154,6 @@ async function addMember(req, res) {
             }
         }
     }
-    return res.render("member/addMember", {
-        error: "Something went wrong. Please try again.",
-        oldData: req.body,
-        blocks,
-        flats,
-        members
-    });
 }
 async function renderMemberUpdate(req, res) {
 
@@ -221,9 +163,9 @@ async function renderMemberUpdate(req, res) {
     const blockName = member.blockName;
     const flats = blockName ? await getUpdateAvailableFlats(blockName, member.flatNo) : [];
     const filePath =
-        member.documents?.[0]?.filesPath?.[0] || null;
+      member.documents?.[0]?.filesPath?.[0] || null;
     return res.render("member/updateMember", {
-        members, member, blocks, flats, blockName, filePath
+        members, member, blocks, flats, blockName,filePath
     })
 }
 
@@ -237,9 +179,9 @@ async function memberUpdate(req, res) {
     const member = await Member.findById(req.params.id);
     const blocks = await Block.find({});
     const flats = blockName ? await getUpdateAvailableFlats(blockName, member.flatNo) : [];
-
+    
     if (flatNo !== member.flatNo) {
-        const alreadyExist = await Member.findOne({ blockName, flatNo, _id: { $ne: req.params.id } });
+        const alreadyExist = await Member.findOne({ blockName, flatNo ,_id:{$ne:req.params.id}});
         if (alreadyExist) {
             return res.render("member/updateMember", {
                 error: "flat-blockName is already exists",
@@ -263,126 +205,112 @@ async function memberUpdate(req, res) {
         }
     }
     try {
-        const clean = (p) => (p || "").replace(/\\/g, "/").replace(/^\/+/, "").replace(/^public\//, "");
-        let deleteFilesList = [];
 
-        // Handle files from specific rows
-        Object.keys(req.body.documents || {}).forEach((index) => {
-            let delFiles = req.body.documents[index].deleteFiles || [];
-            if (!Array.isArray(delFiles))
-                delFiles = [delFiles];
-            deleteFilesList.push(...delFiles)
-        });
+        let oldList = member.documents.Map(oldL=>({
+            documentType:oldL.documentType,
+            filePath:[oldL.filesPath]
+        }))
+        const normalize =(p) => (p || "").replace(/\\/g, "/").replace(/^\/+/, "");
+        const formDocs = req.body.documents || [];
 
-        // Handle global delete files (from removed rows)
-        if (req.body.globalDeleteFiles) {
-            let globalDels = req.body.globalDeleteFiles;
-            if (!Array.isArray(globalDels)) globalDels = [globalDels];
-            deleteFilesList.push(...globalDels);
-        }
-
-        deleteFilesList = [...new Set(deleteFilesList.map(clean))];
-
-
-
-        let updateDocs = [];
-        Object.keys(req.body.documents || {}).forEach((index) => {
-            const documentType = req.body.documents[index].documentType;
-
-            let keepFiles = req.body.documents[index].existingFiles || [];
-            if (!Array.isArray(keepFiles))
-                keepFiles = [keepFiles];
-
-            keepFiles = keepFiles.filter(file => !deleteFilesList.includes(clean(file)));
-            if (keepFiles.length > 0) {
-                updateDocs.push({
-                    documentType: documentType,
-                    filesPath: keepFiles
-                })
-            }
-
+        const newList = formDocs.map((fd)=>{
+            const files = fd.existingFiles || []
         })
-        if (req.files && req.files.length > 0) {
-            Object.keys(req.body.documents || {}).forEach((index) => {
-                const docType = req.body.documents[index].documentType;
-                const relatedFiles = req.files.filter(file =>
-                    file.fieldname === `documents[${index}][files]`
-                );
-                if (relatedFiles.length === 0) return;
 
-                const newPaths = relatedFiles.map(file =>
-                    file.path.split("public")[1].replace(/\\/g, "/")
+        oldDocuments.forEach((oldDoc)=>{
+            const matched = formDocs.find((fd)=>{
+                fd.documentType === oldDoc.documentType
+            })
+            let keepFiles = matched?.filesPath ||[];
+            if(!Array.isArray(keepFiles)) keepFiles= [keepFiles];
+            keepFiles = keepFiles.map(normalize);
+            oldDoc.filesPath = oldDoc.filesPath.filter((oldPath)=>{
+                const cleanOld = normalize(oldPath);
+                if(!keepFiles.include(cleanOld)){
+
+                }
+            })
+        
+        })
+
+
+        // documents = documents.filter(doc => doc.filesPath.length > 0);
+
+        if (req.files && req.files.length > 0 && req.body.documents) {
+            Object.keys(req.body.documents).forEach(index => {
+                const documentType = req.body.documents[index].documentType;
+                const relatedFiles = req.files.filter(
+                    file => file.fieldname === `documents[${index}][files]`
                 );
-                const matched = updateDocs.find(doc => doc.documentType ===
-                    docType
-                )
-                if (matched) {
-                    matched.filesPath.push(...newPaths)
-                } else {
-                    updateDocs.push({
-                        documentType: docType,
-                        filesPath: newPaths
+                if(relatedFiles.length === 0) return;
+                const newPaths = relatedFiles.map(file => 
+                    `/memberIdProof/${file.filename}`
+                );
+                const existingDoc = oldDocuments.find(oldDoc =>oldDoc.documentType === documentType);
+                if(existingDoc){
+                    existingDoc.filesPath.push(...newPaths)
+                }else {
+                    oldDocuments.push({
+                        documentType,
+                        filesPath:newPaths
                     })
                 }
             })
         }
-        const data = { ...req.body, documents: updateDocs };
 
 
-        const { error } = memberUpdateValidationSchema.validate(data, {
-            allowUnknown: true
-        });
-        if (error) {
-            if (req.files?.length) {
-                deleteUploadFiles(req.files)
-            }
-            return res.render("member/updateMember", {
-                error: error.details[0].message,
-                oldData: req.body,
-                members, member, blocks, flats, blockName
-            })
+        const data = { ...req.body ,documents:oldDocuments};
+    errHandleMulter
+
+    const { error } = memberUpdateValidationSchema.validate(data,{
+          allowUnknown: true
+    });
+    if (error) {
+        if (req.files?.length) {
+            deleteUploadFiles(req.files)
         }
-        if (blockName !== member.blockName || flatNo !== member.flatNo) {
-            await Block.findOneAndUpdate({ blockName: member.blockName },
-                { $inc: { currentFlats: -1 } }
+        return res.render("member/updateMember", {
+            error: error.details[0].message,
+            oldData: req.body,
+            members, member, blocks, flats, blockName
+        })
+    }
+           if(blockName !== member.blockName || flatNo !== member.flatNo){
+            await Block.findOneAndUpdate({blockName:member.blockName},
+                {$inc: {currentFlats:-1}}
             )
-            await Block.findOneAndUpdate({ blockName: blockName },
-                { $inc: { currentFlats: +1 } }
+            await Block.findOneAndUpdate({blockName:blockName},
+                {$inc: {currentFlats:+1}}
             )
             await Flat.findOneAndUpdate(
                 {
-                    blockName: member.blockName,
-                    flatNo: member.flatNo,
+                    blockName:member.blockName,
+                    flatNo:member.flatNo,
                 },
-                { isBooked: false }
+                {isBooked:false}
             )
             await Flat.findOneAndUpdate(
-                { blockName, flatNo },
-                { isBooked: true }
+                {blockName,flatNo},
+                {isBooked:true}
             )
-        }
-        if (deleteFilesList.length > 0) {
-            deleteUploadFiles(deleteFilesList);
-        }
-
-        const updateData = { ...req.body, documents: updateDocs };
+           }
+        
+        const updateData = {...req.body,documents};
         await Member.findByIdAndUpdate(req.params.id, updateData);
-        console.log("deleteFilesList:", deleteFilesList);
-        console.log("existingFiles:", req.body.documents?.[0]?.existingFiles);
-        console.log("deleteFiles from body:", req.body.documents?.[0]?.deleteFiles);
-
-        return res.redirect("/member/memberManagement");
-
-
-    } catch (error) {
+        return res.redirect("/member/memberManagement")
+ 
+    }catch (error) {
         console.log(error);
         if (req.files?.length) {
-            deleteUploadFiles(req.files);
-        }
-        return res.send(`something is wrong`)
+        deleteUploadFiles(req.files);
     }
+        return res.send(`somwthing is wrong`)
+    }
+    
 
 }
+
+
 async function getDocumentMember(req, res) {
     const { id } = req.params;
     const member = await Member.findById(id);
@@ -400,7 +328,7 @@ async function getDocumentMember(req, res) {
 async function memberManagement(req, res) {
     const blocks = await Block.find({});
     const flats = await Flat.find({});
-    const members = await Member.find({ status: "ACTIVE" });
+    const members = await Member.find({});
     return res.render("member/memberManagement", {
         members,
         blocks,
@@ -448,9 +376,7 @@ async function deleteMember(req, res) {
     return res.redirect("/member/memberManagement");
 }
 
-
 module.exports = {
     renderAddMemberPage, addMember, memberManagement, renderMemberUpdate,
-    memberUpdate, deleteMember, availableFlats, getDocumentMember, deleteFileSafe,
-
+    memberUpdate, deleteMember, availableFlats, getDocumentMember, deleteFileSafe
 }
